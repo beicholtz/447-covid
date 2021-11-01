@@ -3,17 +3,60 @@
 }
 
 body {
-  background-color: #2d3142;
+  background-color: #d8e6f1;
 }
 
 .searchbar {
+  background-color: #77b7ce;
   padding: 2vh 0vh;
   text-align: center;
   position: relative;
   z-index: 9;
 }
 
-.mapdiv {
-  position: absolute;
-  z-index: 1;
+.map-container {
+  height: 70vh;
+  width: 70vw;
+  border-style: solid;
+  margin-top: 1%;
+  margin-left: 1%;
+  float: left;
+  background-color: #5b72b1;
 }
+
+.mapdiv {
+  position: relative;
+  height: inherit;
+  width: inherit;
+  z-index: 0;
+}
+
+.leftpad {
+  background-color: #b6d8f1;
+  width: 16vw;
+  height: 70vh;
+  float: left;
+  padding-left: 2%;
+  padding-right: 2%;
+  padding-top: 5%;
+  text-align: center;
+  font-size: large;
+  
+}
+
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  right: 0;
+  background-color: #b3cadb;
+  overflow-x: hidden;
+  transition: 0.25s;
+  text-align: left;
+}
+
+  .sidebar div {
+    padding: 50px 10px 0px 10px
+  }

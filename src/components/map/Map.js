@@ -28,7 +28,8 @@ function Map() {
 
   function onEachFeature(feature, layer){
     if(feature.properties && feature.properties.STATE){
-      layer.bindPopup(feature.properties.STATE + feature.properties.COUNTY);
+      let value = feature.properties.NAME + " " + feature.properties.COUNTY;
+      layer.bindPopup(value);
     }
   }
 
@@ -63,7 +64,7 @@ function Map() {
 
   return (
     <div class="mapdiv"> 
-      <MapContainer style={{height: "90vh", width:"75vw", background:"transparent"}} 
+      <MapContainer style={{height: "inherit", width: "inherit", background:"transparent"}} 
                     zoom={4.8} center={[35, -95.83]} zoomDelta={0.33} zoomSnap={0} minZoom={4.6}
                     maxBounds={bounds}>
         <GeoJSON 
