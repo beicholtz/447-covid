@@ -1,24 +1,30 @@
 import React from "react";
 import autoComplete from "@tarekraafat/autocomplete.js/dist/autoComplete";
 import AutocompleteWords from './autocomplete.json';
+import relationalData from './relational.json';
 
 class SearchBar extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            county: ''
+        };
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
+        this.autoCompleteJS = undefined;
+    }
+
+
     async handleSubmit(event) {
         event.preventDefault();
-        console.log('hi');
-        // await fetch('/api/updateUser', {
-        //     method: 'POST',
-        //     body: JSON.stringify(this.state)
-        // }).then(function(response){
-        //     return response.json();
-        // });
-        
+        this.props.handler([this.autoCompleteJS.input.value, relationalData[this.autoCompleteJS.input.value]]);
         event.target.reset();
     }
 
     componentDidMount(){
-        const autoCompleteJS = new autoComplete({
+        this.autoCompleteJS = new autoComplete({
             placeHolder: "Search for Counties",
             submit: true,
             data: {
@@ -34,7 +40,7 @@ class SearchBar extends React.Component {
                 input: {
                     selection: (event) => {
                         const selection = event.detail.selection.value;
-                        autoCompleteJS.input.value = selection;
+                        this.autoCompleteJS.input.value = selection;
                     }
                 }
             },
@@ -45,7 +51,7 @@ class SearchBar extends React.Component {
         return(
             <div class='searchbar'>
                 <form onSubmit={this.handleSubmit}> 
-                    <input id="autoComplete" />
+                    <input id="autoComplete" name='county' />
                 </form>
             </div> 
         );
