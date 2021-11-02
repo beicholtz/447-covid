@@ -28,6 +28,7 @@ class App extends React.Component {
       selectedCounty : id[0],
       selectedCountyFIPS : id[1]
     });
+
   //   await fetch('/api/getData/' + id, {
   //     method: 'get',
   //     body: JSON.stringify(id)
@@ -38,32 +39,19 @@ class App extends React.Component {
 
   render () {
       return(
-        <div>
-          <SearchBar />
-          {/* Left Info Text */}
-          <div className="leftpad">Team 11 Coronavirus Map Project
-            <p>
-                This is the map that displays the covid-19 infection and vaccination
-                rate for the US counties. First select a state to view that state's
-                and then select a county to view that's counties data.
-            </p>
-            <button onClick={this.openSide}>Open Sidebar</button>
-          </div>
-          {/* Container for easier control of leaflet map location */}
-          <div class="map-container">
-            <Map />
-          </div>
-          {/* Sidebar to display data */}
-          <div id="sidebar" className="sidebar">
-            <div>
-              <button onClick={this.closeSide}>Close</button>
-              <p>Testing</p>
-            </div>
-          </div>
+        <div>          
+          <SearchBar handler={this.updateCounty}/>
+          <div className="container" style={this.state.selectedCounty ? {width: 'auto'} : {width: '100vw'} }> 
+            <Map update={this.state.selectedCounty ? true : false}/>
+            {this.state.selectedCounty ? 
           
-          {/* <SearchBar handler={this.updateCounty}/>
-          <Map/>
-          <SideBar countyName={this.state.selectedCounty} /> */}
+            <SideBar countyName={this.state.selectedCounty} />
+          
+          
+            : null} 
+        </div>
+          
+
         </div>
       );
 

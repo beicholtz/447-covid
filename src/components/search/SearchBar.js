@@ -7,10 +7,6 @@ class SearchBar extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            county: ''
-        };
-
         this.handleSubmit = this.handleSubmit.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
         this.autoCompleteJS = undefined;
