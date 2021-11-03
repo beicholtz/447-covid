@@ -8,14 +8,14 @@ class SideBar extends React.Component {
     }
 
     async getData(){
-        // call api endpoint
+        // call api endpoint 4F5D75
     }
 
     render () {
 
         return(
             <div className="sidebar">
-                <h1> {this.props.countyName} </h1>
+                <h1 className="sidebarHeading"> {this.props.countyName} </h1>
             </div>
         );
     }

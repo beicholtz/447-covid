@@ -41,8 +41,8 @@ class App extends React.Component {
       return(
         <div>          
           <SearchBar handler={this.updateCounty}/>
-          <div className="container" style={this.state.selectedCounty ? {width: 'auto'} : {width: '100vw'} }> 
-            <Map update={this.state.selectedCounty ? true : false}/>
+          <div className="container"> 
+            <Map handler={this.updateCounty} update={this.state.selectedCounty ? true : false}/>
             {this.state.selectedCounty ? 
           
             <SideBar countyName={this.state.selectedCounty} />

@@ -3,13 +3,14 @@ import {MapContainer, GeoJSON} from 'react-leaflet'; //useMap
 import countyData from './mapData.json';
 import "leaflet/dist/leaflet.css";
 import statesData from './states.json';
+import FIPStoState from './toState.json';
 import React from 'react';
 
 
 class Map extends React.Component {
   constructor(props) {
+    
     super(props);
-
     this.countyStyle = {
       fillColor: '#EC6A32',
       weight: 1,
@@ -19,9 +20,9 @@ class Map extends React.Component {
     }
 
     this.stateStyle = {
-      fillColor: '#BFC0C0',
-      fillOpacity: 1.0,
-      color: 'black',
+      fillColor: 'transparent',
+      fillOpacity: 0.0,
+      color: '#BFC0C0',
       weight: 1,
       opacity: 1,
     }
@@ -29,14 +30,21 @@ class Map extends React.Component {
     this.leafletMap = React.createRef();
     this.chosenState = undefined
     this.bounds = L.latLngBounds(L.latLng(51,-131), L.latLng(17,-64))
-    // this.componentDidMount = this.componentDidMount.bind(this);
+    this.onEachFeature = this.onEachFeature.bind(this);
+    this.updateProps = this.updateProps.bind(this);
   }
 
-  onEachFeature(feature, layer){
-    if(feature.properties && feature.properties.STATE){
-      let value = feature.properties.NAME + " " + feature.properties.COUNTY;
-      layer.bindPopup(value);
-    }
+  onEachFeature(feature, layer, props){
+    layer.bindPopup(feature.properties.NAME + ", " + FIPStoState[feature.properties.STATE])
+    layer.on({
+      mouseover: function(e){layer.openPopup()},
+      mouseout: function(e){layer.closePopup()},
+      click: () => this.updateProps(feature),
+    });
+  }
+
+  updateProps(feature){
+    this.props.handler([feature.properties.NAME + ", " + FIPStoState[feature.properties.STATE] , feature.properties.STATE + feature.properties.COUNTY])
   }
 
   removeCounties(){
@@ -45,40 +53,51 @@ class Map extends React.Component {
     }
   }
 
-  stateClicked = (feature) => {
-    var stateSpecific = {"type": "FeatureCollection", "features":[]};
-    for(var i = 0; i < countyData.features.length; i++){
-      if(countyData.features[i].properties.STATE === feature.properties.STATE){
-        stateSpecific.features.push(countyData.features[i]);
-      }
-    }
+  componentDidUpdate(){
+    document.getElementById("transformOnChange").style.width="75vw";  
     
-    this.removeCounties(this.leafletMap);
-    
-    this.chosenState = L.geoJSON(stateSpecific.features, {style: this.countyStyle, onEachFeature: this.onEachFeature});
-
-    this.leafletMap.current.addLayer(this.chosenState);
+    this.leafletMap.current.invalidateSize();
   }
 
-  showCounties = (feature, layer) =>{
-    // console.log('hi')
-    layer.on({
-      mouseover: () => this.stateClicked(feature),
-    });
+  // stateClicked = (feature) => {
+  //   var stateSpecific = {"type": "FeatureCollection", "features":[]};
+  //   for(var i = 0; i < countyData.features.length; i++){
+  //     if(countyData.features[i].properties.STATE === feature.properties.STATE){
+  //       stateSpecific.features.push(countyData.features[i]);
+  //     }
+  //   }
+    
+  //   this.removeCounties(this.leafletMap);
+    
+  //   this.chosenState = L.geoJSON(stateSpecific.features, {style: this.countyStyle, onEachFeature: this.onEachFeature});
 
-  }
+  //   this.leafletMap.current.addLayer(this.chosenState);
+  // }
+
+  // showCounties = (feature, layer) =>{
+  //   layer.on({
+  //     mouseover: () => this.stateClicked(feature),
+  //   });
+
+  // }
 
   render() {
     return (
-      <div className="mapdiv" style={{width: 'inherit'}}> 
+      <div className="mapdiv" id="transformOnChange" style={{width: '100vw'}}> 
         <MapContainer style={{height: "90vh", width: 'inherit', background:"transparent"}} 
                       zoom={4.8} center={[35, -95.83]} zoomDelta={0.33} zoomSnap={0} minZoom={4.6}
                       maxBounds={this.bounds}
                       whenCreated={ mapInstance => { this.leafletMap.current = mapInstance } }>
           <GeoJSON 
+            style={this.countyStyle}
+            data={countyData.features}
+            onEachFeature={this.onEachFeature}
+          />
+          <GeoJSON 
             style={this.stateStyle}
             data={statesData.features}
-            onEachFeature={this.showCounties}
+            interactive={false}
+            // onEachFeature={this.showCounties}
           />
         </MapContainer>
       </div>
@@ -87,83 +106,4 @@ class Map extends React.Component {
 
 
 }
-
-// function Map(shouldUpdate) {
-
-//   var leafletMap;
-//   var chosenState;
-//   var bounds = L.latLngBounds(L.latLng(51,-131), L.latLng(17,-64));
-
-//   const countyStyle = {
-//     fillColor: '#EC6A32',
-//     weight: 1,
-//     opacity: 1,
-//     color: 'black',
-//     fillOpacity: 1
-//   }
-
-//   const stateStyle = {
-//     fillColor: '#BFC0C0',
-//     fillOpacity: 1.0,
-//     color: 'black',
-//     weight: 1,
-//     opacity: 1,
-//   }
-
-//   function onEachFeature(feature, layer){
-//     if(feature.properties && feature.properties.STATE){
-//       let value = feature.properties.NAME + " " + feature.properties.COUNTY;
-//       layer.bindPopup(value);
-//     }
-//   }
-
-//   function removeCounties(map){
-//     if(chosenState){
-//       map.removeLayer(chosenState);
-//     }
-//   }
-
-//   function stateClicked(e, feature, map){
-//     var stateSpecific = {"type": "FeatureCollection", "features":[]};
-//     for(var i = 0; i < countyData.features.length; i++){
-//       if(countyData.features[i].properties.STATE === feature.properties.STATE){
-//         stateSpecific.features.push(countyData.features[i]);
-//       }
-//     }
-    
-//     removeCounties(map);
-    
-//     chosenState = L.geoJSON(stateSpecific.features, {style: countyStyle, onEachFeature: onEachFeature});
-
-//     map.addLayer(chosenState);
-//   }
-
-//   function ShowCounties(feature, layer){
-//     const map = useMap();
-//     layer.on({
-//       mouseover: function(e){ stateClicked(e, feature, map);},
-//     });
-
-//   }
-
-//   if(shouldUpdate){
-//     leafletMap.invalidateSize()
-//   }
-
-//   return (
-//     <div className="mapdiv" style={{width: 'inherit'}}> 
-//       <MapContainer style={{height: "90vh", width: 'inherit', background:"transparent"}} 
-//                     zoom={4.8} center={[35, -95.83]} zoomDelta={0.33} zoomSnap={0} minZoom={4.6}
-//                     maxBounds={bounds}
-//                     ref={function(){leafletMap = map.leafletElement}}>
-//         <GeoJSON 
-//           style={stateStyle}
-//           data={statesData.features}
-//           onEachFeature={ShowCounties}
-//         />
-//       </MapContainer>
-//     </div>
-//   );
-// }
-
 export default Map;
