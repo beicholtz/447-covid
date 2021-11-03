@@ -8,8 +8,8 @@ import React from 'react';
 
 
 class Map extends React.Component {
+  
   constructor(props) {
-    
     super(props);
     this.countyStyle = {
       fillColor: '#EC6A32',
@@ -34,7 +34,11 @@ class Map extends React.Component {
     this.updateProps = this.updateProps.bind(this);
   }
 
-  onEachFeature(feature, layer, props){
+  /* 
+    Add events to each counties geoJSON layer. This allows for the hovering to display the county name and state.
+    This function implements the connection to the searchbar. This is done by using the handler prop.
+  */
+  onEachFeature(feature, layer){
     layer.bindPopup(feature.properties.NAME + ", " + FIPStoState[feature.properties.STATE])
     layer.on({
       mouseover: function(e){layer.openPopup()},
@@ -43,43 +47,21 @@ class Map extends React.Component {
     });
   }
 
+  /*
+    Helper functions that makes useage of the handler passed into map via App
+    Passes an Array with the name of the county and state and its FIPS code
+  */
   updateProps(feature){
     this.props.handler([feature.properties.NAME + ", " + FIPStoState[feature.properties.STATE] , feature.properties.STATE + feature.properties.COUNTY])
   }
 
-  removeCounties(){
-    if(this.chosenState){
-      this.leafletMap.current.removeLayer(this.chosenState);
-    }
-  }
-
+  /* 
+    Called when the props update. For now this controls the map moving over to allow for the sidebar to have room
+  */
   componentDidUpdate(){
     document.getElementById("transformOnChange").style.width="75vw";  
-    
     this.leafletMap.current.invalidateSize();
   }
-
-  // stateClicked = (feature) => {
-  //   var stateSpecific = {"type": "FeatureCollection", "features":[]};
-  //   for(var i = 0; i < countyData.features.length; i++){
-  //     if(countyData.features[i].properties.STATE === feature.properties.STATE){
-  //       stateSpecific.features.push(countyData.features[i]);
-  //     }
-  //   }
-    
-  //   this.removeCounties(this.leafletMap);
-    
-  //   this.chosenState = L.geoJSON(stateSpecific.features, {style: this.countyStyle, onEachFeature: this.onEachFeature});
-
-  //   this.leafletMap.current.addLayer(this.chosenState);
-  // }
-
-  // showCounties = (feature, layer) =>{
-  //   layer.on({
-  //     mouseover: () => this.stateClicked(feature),
-  //   });
-
-  // }
 
   render() {
     return (
@@ -97,7 +79,6 @@ class Map extends React.Component {
             style={this.stateStyle}
             data={statesData.features}
             interactive={false}
-            // onEachFeature={this.showCounties}
           />
         </MapContainer>
       </div>

@@ -1,6 +1,11 @@
 import React from "react";
 
 class SideBar extends React.Component {
+    /*
+        TODO
+            Implement the retrevial of data
+            Allow for closing the sidebar
+    */
     constructor(props) {
         super(props)
 

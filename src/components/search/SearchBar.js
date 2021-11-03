@@ -5,6 +5,12 @@ import relationalData from './relational.json';
 
 class SearchBar extends React.Component {
 
+    /*
+        TODO: 
+            QOL make it so when the user selects a county from the dropdown it automatically submits the form
+            On the same note when the user uses the arrow keys the search bar should auto populate the data they are hovering  
+    */
+
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -12,13 +18,18 @@ class SearchBar extends React.Component {
         this.autoCompleteJS = undefined;
     }
 
-
+    /*
+        when the form is submitted the data is passed to the sidebar
+    */ 
     async handleSubmit(event) {
         event.preventDefault();
         this.props.handler([this.autoCompleteJS.input.value, relationalData[this.autoCompleteJS.input.value]]);
         event.target.reset();
     }
 
+    /*
+        Called when the component is created, and performs the initial set-up for autocomplete to work.
+    */
     componentDidMount(){
         this.autoCompleteJS = new autoComplete({
             placeHolder: "Search for Counties",
