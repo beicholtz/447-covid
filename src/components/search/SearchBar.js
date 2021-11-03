@@ -5,12 +5,6 @@ import relationalData from './relational.json';
 
 class SearchBar extends React.Component {
 
-    /*
-        TODO: 
-            QOL make it so when the user selects a county from the dropdown it automatically submits the form
-            On the same note when the user uses the arrow keys the search bar should auto populate the data they are hovering  
-    */
-
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -22,6 +16,7 @@ class SearchBar extends React.Component {
         when the form is submitted the data is passed to the sidebar
     */ 
     async handleSubmit(event) {
+        console.log(this.autoCompleteJS.input.value);
         event.preventDefault();
         this.props.handler([this.autoCompleteJS.input.value, relationalData[this.autoCompleteJS.input.value]]);
         event.target.reset();
@@ -30,9 +25,9 @@ class SearchBar extends React.Component {
     /*
         Called when the component is created, and performs the initial set-up for autocomplete to work.
     */
-    componentDidMount(){
+    async componentDidMount(){
         this.autoCompleteJS = new autoComplete({
-            placeHolder: "Search for Counties",
+            placeHolder: "Search for a county",
             submit: true,
             data: {
                 src: AutocompleteWords.features,
@@ -48,6 +43,16 @@ class SearchBar extends React.Component {
                     selection: (event) => {
                         const selection = event.detail.selection.value;
                         this.autoCompleteJS.input.value = selection;
+                        if(event.detail.event.type === "click"){
+                            event.preventDefault();
+                            this.props.handler([this.autoCompleteJS.input.value, relationalData[this.autoCompleteJS.input.value]]);
+                            this.autoCompleteJS.input.value = ''
+                        }
+                        
+                    },
+                    navigate: (event) => {
+                        const selection = event.detail.selection.value;
+                        this.autoCompleteJS.input.value = selection;
                     }
                 }
             },
@@ -57,7 +62,7 @@ class SearchBar extends React.Component {
     render () {
         return(
             <div className='searchbar'>
-                <form onSubmit={this.handleSubmit}> 
+                <form id="searchForm" onSubmit={this.handleSubmit}> 
                     <input id="autoComplete" name='county' />
                 </form>
             </div> 
