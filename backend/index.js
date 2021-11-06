@@ -1,4 +1,5 @@
 const http = require( 'http' );
+const https = require( 'https' );
 const sqlite3 = require( 'sqlite3' ).verbose();
 const statik = require( 'node-static' );
 const qs = require( 'querystring' );
@@ -24,15 +25,37 @@ fs.access( DB_FILE, fs.F_OK, ( err ) => {
 
   console.log( `Date is ${ accessDate }` );
 
-  const db = new sqlite3.Database( "./covid.db", ( err ) => {
-    if ( err ) {
-      console.log( err );
-    } else {
-      console.log( "Successfully connected to the database" );
+  const db = new sqlite3.Database( "./covid.db" );
 
-      // Update the database here
-    }
-  } );
+  // Create the tables if it doesnt exist
+
+  // Load the data if required
+  if ( accessDate.getTime() ) {
+
+  } else {
+    https.get( "https://data.cdc.gov/api/views/nra9-vzzn/rows.json", ( res ) => {
+      let body = "";
+
+      res.on( "data", ( chunk ) => {
+        body += chunk;
+      } );
+
+      res.on( "end", () => {
+        let infectionData = JSON.parse( body );
+        // Load it into the database
+
+        // List of infection data
+        let data = infectionData.data;
+
+        // Fetch the vaccination data
+        // TODO
+      } )
+    } );
+
+    // Set up a runnable to update the data
+    // TODO
+
+  }
 } );
 
 const fileServer = new statik.Server( './static' );
@@ -56,6 +79,7 @@ const server = http.createServer( ( req, res ) => {
     if ( path === "/api/getdata" && method == "GET" ) {
       let query = qs.parse( queries );
       // Parse the time ranges and return the appropriate data, or return an error code if unavailable
+      // TODO
 
     } else if ( method === "GET" ) {
       fileServer.serve( req, res, ( e, response ) => {
