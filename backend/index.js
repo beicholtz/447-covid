@@ -9,6 +9,7 @@ const HOSTNAME = '0.0.0.0';
 const PORT = 3000;
 
 const DB_FILE = "./covid.db";
+var db;
 
 // If the database exists, then get when it was last updated
 // Update it to the current date if behind
@@ -25,14 +26,19 @@ fs.access( DB_FILE, fs.F_OK, ( err ) => {
 
   console.log( `Date is ${ accessDate }` );
 
-  const db = new sqlite3.Database( "./covid.db" );
+  db = new sqlite3.Database( "./covid.db" );
 
   // Create the tables if it doesnt exist
+  db.serialize( () => {
+    db.run( "CREATE TABLE IF NOT EXISTS vaccinations ( date BIGINT, fips TEXT, name BIGINT, state TEXT, complete INT, complete_pct FLOAT, complete_12 INT, complete_12_pct FLOAT, complete_18 INT, complete_18_pct FLOAT, complete_65 INT, complete_65_pct FLOAT )" );
+    db.run( "CREATE TABLE IF NOT EXISTS transmissions ( date BIGINT, fips TEXT, name TEXT, state_name TEXT, cases TEXT, positive FLOAT, severity TEXT )" )
+  } );
 
   // Load the data if required
   if ( accessDate.getTime() ) {
-
+    console.log( "Database is already populated" )
   } else {
+    console.log( "Downloading transmission data..." );
     https.get( "https://data.cdc.gov/api/views/nra9-vzzn/rows.json", ( res ) => {
       let body = "";
 
@@ -41,15 +47,57 @@ fs.access( DB_FILE, fs.F_OK, ( err ) => {
       } );
 
       res.on( "end", () => {
-        let infectionData = JSON.parse( body );
+        console.log( "Parsing transmission data..." );
+        let data = JSON.parse( body ).data;
         // Load it into the database
+        console.log( `Inserting transmission data(${ data.length } entries)...` );
+        db.serialize( () => {
+          let statement = db.prepare( "INSERT INTO transmissions ( date, fips, name, state_name, cases, positive, severity ) VALUES ( ?, ?, ?, ?, ?, ?, ? )" );
+          for ( let i = 0; i < data.length; i++ ) {
+            statement.run( [ new Date( data[ 3 ] ).getTime(), data[ 2 ], data[ 1 ], data[ 0 ], data[ 4 ], data[ 5 ], data[ 6 ] ] );
+            if ( i % 100000 == 0 ) {
+              console.log( `Executing transmission statement ${ i }/${ data.length }` );
+            }
+          }
+          statement.finalize();
+        } );
 
-        // List of infection data
-        let data = infectionData.data;
-
-        // Fetch the vaccination data
-        // TODO
+        console.log( "Done parsing transmission data" );
       } )
+    } ).on( "error", ( e ) => {
+      console.error( e );
+    } );
+
+    console.log( "Downloading vaccination data..." );
+    https.get( "https://data.cdc.gov/api/views/8xkx-amqh/rows.json", ( res ) => {
+      let vaccinationBody = "";
+
+      res.on( "data", ( chunk ) => {
+        vaccinationBody += chunk;
+      } );
+
+      res.on( "end", () => {
+        console.log( "Parsing vaccination data..." );
+        let data = JSON.parse( vaccinationBody ).data;
+
+        console.log( `Inserting vaccination data(${ data.length } entries)...` );
+        db.serialize( () => {
+          let statement = db.prepare( "INSERT INTO vaccinations ( date, fips, name, state, complete, complete_pct, complete_12, complete_12_pct, complete_18, complete_18_pct, complete_65, complete_65_pct ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )" );
+          for ( let i = 0; i < data.length; i++ ) {
+            let slice = data[ i ].slice( 8, 20 );
+            slice[ 0 ] = new Date( slice[ 0 ] ).getTime();
+            statement.run( slice );
+            if ( i % 100000 == 0 ) {
+              console.log( `Executing vaccination statement ${ i }/${ data.length }` );
+            }
+          }
+          statement.finalize();
+        } );
+
+        console.log( "Done parsing vaccination data" )
+      } );
+    } ).on( "error", ( e ) => {
+      console.error( e );
     } );
 
     // Set up a runnable to update the data
@@ -63,9 +111,9 @@ const server = http.createServer( ( req, res ) => {
   let content = '';
 
   req.addListener( 'data', ( data ) => {
-    body += data;
+    content += data;
 
-    if ( body.length > 1e6 ) {
+    if ( content.length > 1e6 ) {
       req.connection.destroy();
     }
   } );
@@ -99,4 +147,9 @@ const server = http.createServer( ( req, res ) => {
 
 server.listen( PORT, HOSTNAME, () => {
   console.log( `Server running at http://${HOSTNAME}:${PORT}/` );
+} );
+
+process.on( "SIGINT", () => {
+  server.close();
+  db.close();
 } );
