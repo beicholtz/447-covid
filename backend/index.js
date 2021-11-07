@@ -7,7 +7,7 @@ const fs = require( 'fs' );
 const schedule = require( 'node-schedule' );
 
 const HOSTNAME = '0.0.0.0';
-const PORT = 3000;
+const PORT = 3072;
 
 const db = new sqlite3.Database( ':memory:' );
 
