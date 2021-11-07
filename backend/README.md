@@ -1,5 +1,5 @@
 ## Getting started
-To run the node server, execute `npm install` then `node index.js`. Place all static files such as ones generated from a React project into a folder named `static`. Visit [https://localhost:3000](https://localhost:3000) to view the website.
+To run the node server, execute `npm install` then `node index.js`. Place all static files such as ones generated from a React project into a folder named `static`. Visit [https://localhost:3000](https://localhost:3072) to view the website.
 
 ## API Endpoints
 `/api/getdata` - Accepts `start` and `end` field queries, as UNIX milliseconds. Will return a list of arrays with dates between(inclusive) the start and end. For example, `/api/getdata?start=1628049600000&end=1628136000000` could return 
