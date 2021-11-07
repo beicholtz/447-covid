@@ -64,14 +64,14 @@ https.get( "https://data.cdc.gov/api/views/8xkx-amqh/rows.json", ( res ) => {
     db.serialize( () => {
       let statement = db.prepare( "INSERT INTO vaccinations VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )" );
       for ( let i = 0; i < data.length; i++ ) {
-        let slice = data[ i ].slice( 8, 20 );
+        let slice = data[ i ].slice( 8, 10 );
         let date = new Date( slice[ 0 ] );
         date.setHours( 0 );
         date.setMinutes( 0 );
         date.setSeconds( 0 );
         date.setMilliseconds( 0 );
         slice[ 0 ] = date.getTime();
-        statement.run( slice );
+        statement.run( slice.concat( data[ i ].slice( 11, 21 ) ) );
       }
       statement.finalize();
     } );
