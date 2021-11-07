@@ -29,7 +29,7 @@ class Map extends React.Component {
 
     this.leafletMap = React.createRef();
     this.chosenState = undefined
-    this.bounds = L.latLngBounds(L.latLng(51,-131), L.latLng(17,-64))
+    this.bounds = L.latLngBounds(L.latLng(51,-127), L.latLng(17,-64))
     this.onEachFeature = this.onEachFeature.bind(this);
     this.updateProps = this.updateProps.bind(this);
   }
