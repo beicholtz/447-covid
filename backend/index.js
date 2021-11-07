@@ -4,6 +4,7 @@ const sqlite3 = require( 'sqlite3' ).verbose();
 const statik = require( 'node-static' );
 const qs = require( 'querystring' );
 const fs = require( 'fs' );
+const schedule = require( 'node-schedule' );
 
 const HOSTNAME = '0.0.0.0';
 const PORT = 3000;
@@ -33,7 +34,7 @@ https.get( "https://data.cdc.gov/api/views/nra9-vzzn/rows.json", ( res ) => {
       for ( let i = 0; i < data.length; i++ ) {
         let row = data[ i ];
         let date = new Date( row[ 11 ] );
-        date.setHours( 0 );
+        date.setUTCHours( 0 );
         date.setMinutes( 0 );
         date.setSeconds( 0 );
         date.setMilliseconds( 0 );
@@ -66,7 +67,7 @@ https.get( "https://data.cdc.gov/api/views/8xkx-amqh/rows.json", ( res ) => {
       for ( let i = 0; i < data.length; i++ ) {
         let slice = data[ i ].slice( 8, 10 );
         let date = new Date( slice[ 0 ] );
-        date.setHours( 0 );
+        date.setUTCHours( 0 );
         date.setMinutes( 0 );
         date.setSeconds( 0 );
         date.setMilliseconds( 0 );
@@ -82,8 +83,52 @@ https.get( "https://data.cdc.gov/api/views/8xkx-amqh/rows.json", ( res ) => {
   console.error( e );
 } );
 
-// TODO Set up a runnable to update the database
+console.log( "Starting update scheduler" );
+schedule.scheduleJob( '4 0 0 * * *', ( date ) => {
+  date.setUTCHours( 0 );
+  date.setDate( date.getDate() - 1 );
+  let dateStr = date.toISOString.slice( 0, -1 );
+  console.log( "Updating vaccination and transmission data..." );
+  https.get( `https://data.cdc.gov/resource/8xkx-amqh.json?date=${ dateStr }`, ( res ) => {
+    let content = "";
 
+    res.on( "data", ( chunk ) => {
+      content += chunk;
+    } );
+
+    res.on( "end", () => {
+      let data = JSON.parse( content );
+      db.serialize( () => {
+        let statement = db.prepare( "INSERT INTO vaccinations VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )" );
+        for ( let i = 0; i < data.length; i++ ) {
+          let row = data[ i ];
+          statement.run( [ dateStr, row.fips, row.recip_county, row.recip_state, row.series_complete_yes, row.completeness_pct, row.series_complete_12plus, row.series_complete_12pluspop, row.series_complete_18plus, row.series_complete_18pluspop, row.series_complete_65plus, row.series_complete_65pluspop ] );
+        }
+        statement.finalize();
+      } );
+    } );
+  } );
+
+  https.get( `https://data.cdc.gov/resource/nra9-vzzn.json?date=${ dateStr }`, ( res ) => {
+    let content = "";
+
+    res.on( "data", ( chunk ) => {
+      content += chunk;
+    } );
+
+    res.on( "end", () => {
+      let data = JSON.parse( content );
+      db.serialize( () => {
+        let statement = db.prepare( "INSERT INTO transmissions VALUES ( ?, ?, ?, ?, ?, ?, ? )" );
+        for ( let i = 0; i < data.length; i++ ) {
+          let row = data[ i ];
+          statement.run( [ dateStr, row.fips_code, row.county_name, row.state_name, row.cases_per_100k_7_day_count, row.percent_test_results_reported, row.community_transmission_level ] );
+        }
+        statement.finalize();
+      } );
+    } );
+  } );
+} );
 
 function isPositiveInteger( val ) {
   return val && val.match( /^([0-9]+)$/ );
