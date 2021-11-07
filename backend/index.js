@@ -36,7 +36,11 @@ const server = http.createServer( ( req, res ) => {
       let query = qs.parse( queries );
       // Parse the time ranges and return the appropriate data, or return an error code if unavailable
       if ( isPositiveInteger( query.start ) && isPositiveInteger( query.end ) ) {
-        db.all( `SELECT DISTINCT transmissions.date, transmissions.fips, transmissions.name, vaccinations.state, transmissions.state_name, transmissions.cases, transmissions.positive, transmissions.severity, vaccinations.complete, vaccinations.complete_pct, vaccinations.complete_12, vaccinations.complete_12_pct, vaccinations.complete_18, vaccinations.complete_18_pct, vaccinations.complete_65, vaccinations.complete_65_pct FROM transmissions OUTER LEFT JOIN vaccinations ON vaccinations.date = transmissions.date AND vaccinations.fips = transmissions.fips WHERE transmissions.date >= ( ? ) AND transmissions.date <= ( ? ) AND transmissions.fips = ( ? ) ORDER BY transmissions.fips, transmissions.date`, [ query.start, query.end, query.fips ], ( error, rows ) => {
+        //`SELECT DISTINCT transmissions.date, transmissions.fips, transmissions.name, vaccinations.state, transmissions.state_name, transmissions.cases, 
+        //transmissions.positive, transmissions.severity, vaccinations.complete, vaccinations.complete_pct, vaccinations.complete_12, 
+        //vaccinations.complete_12_pct, vaccinations.complete_18, vaccinations.complete_18_pct, vaccinations.complete_65, vaccinations.complete_65_pct 
+        //FROM transmissions OUTER LEFT JOIN vaccinations ON vaccinations.date = transmissions.date AND vaccinations.fips = transmissions.fips WHERE transmissions.date >= ( ? ) AND transmissions.date <= ( ? ) AND transmissions.fips = ( ? ) ORDER BY transmissions.fips, transmissions.date`, [ query.start, query.end, query.fips ],
+        db.all(  `SELECT * from vaccinations JOIN transmissions ON vaccinations.fips = ( ? ) AND transmissions.fips = ( ? )` , [ query.fips, query.fips ], ( error, rows ) => {
           if ( error ) {
             console.log( error );
             res.statusCode = 500;
@@ -44,6 +48,7 @@ const server = http.createServer( ( req, res ) => {
             res.end( '{"status":500,"message":"Error querying database"}' );
           } else {
             res.statusCode = 200;
+            res.setHeader("Access-Control-Allow-Origin", '*');
             res.setHeader( 'Content-Type', 'application/json' );
             let result = { "data": [], "headers": [ "date", "fips_code", "county_name", "state", "state_name", "cases", "positive_pct", "severity", "complete", "complete_pct", "complete_12", "complete_12_pct", "complete_18", "complete_18_pct", "complete_65", "complete_65_pct" ] };
             for ( let i = 0; i < rows.length; i++ ) {

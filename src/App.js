@@ -18,23 +18,33 @@ class App extends React.Component {
     super(props)
     this.state = {
         selectedCounty : 0,
-        selectedCountyFIPS : 0
+        cases : 0,
+        positive_pct : 0,
+        severity : 0,
+        complete : 0,
     };
     this.updateCounty = this.updateCounty.bind(this);
 }
   
   async updateCounty(id){
-    this.setState({
-      selectedCounty : id[0],
-      selectedCountyFIPS : id[1]
-    });
-
-  //   await fetch('/api/getData/' + id, {
-  //     method: 'get',
-  //     body: JSON.stringify(id)
-  // }).then(function(response){
-  //     return response.json();
-  // });
+    let req = this;
+    await fetch('http://localhost:3072/api/getdata?start=0&end=16281360000000&fips=' + id[1], {
+            method: 'GET'
+        }).then(function(response){
+            let a;
+            response.json().then(data =>{
+                a = data
+                req.setState({
+                  selectedCounty : id[0],
+                  cases : a.data[0][5],
+                  positive_pct : a.data[0][6],
+                  severity : a.data[0][7],
+                  complete : a.data[0][8],
+                });
+            })
+        });
+        
+    
   }
 
   render () {
@@ -45,7 +55,7 @@ class App extends React.Component {
             <Map handler={this.updateCounty} update={this.state.selectedCounty ? true : false}/>
             {this.state.selectedCounty ? 
           
-            <SideBar countyName={this.state.selectedCounty} />
+            <SideBar countyName={this.state.selectedCounty} cases={this.state.cases} positivity={this.state.positive_pct} severity={this.state.severity} vaccinations={this.state.complete} />
           
           
             : null} 
