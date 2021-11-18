@@ -1,0 +1,108 @@
+Covid-map project:
+    ☐ Tests
+        ☐ postman tests for backend
+            ☐ try accessing counties that dont exist
+            ☐ time ranges that dont exist
+        ☐ front end
+            ☐ searching for counties that dont exist
+            ☐ time ranges that dont exist
+    ☐ Full-site things
+        ☐ Color changes (maybe light and dark mode)
+        ☐ Make it so you can just start typing to search
+            this is so you dont really need a mouse to make the site work
+    ☐ Searchbar
+        ☐ Search for entire states
+            ☐ combine all counties
+        ☐ deal with the submits of counties that don't exist.
+            Do i just choose the closest county
+            do i put a little message that the county doesnt exist
+            do i do nothing
+        ☐ Zoom into the state of the county that is slected
+            maybe we should color it differntly or change the outline maybe add a shadow to it so it almost pops out
+    ☐ Sidebar
+        I think it will default display the most recent results up top (1 day view)
+        The graph will then show the trends for default the last month
+        ☐ Collapsable
+            ☐ Arrow that closes it
+            ☐ Animated
+        ☐ Add Graph
+            ☐ Shows trends
+        ☐ Timescales
+    ☐ Map
+        ☐ QOL
+            ☐ Smooth pan and zoom
+            ☐ hover over styling
+            ☐ Zoom in on click to atleast the state
+            ☐ Show state names and maybe top X cities
+                I think this is going to be the hardest part.
+        ☐ Choropleth map
+            ☐ Different Layers
+                This will need some general api calls
+                ☐ Infection Rate
+                    /api/getInfectionRate
+                    This call will need to return the most recet infection rate for all counties
+                    maybe it returns it sorted to create the range
+                    ☐ Maybe we can eventually even add in support for other dates (-30 days, -90 days, etc)
+                ☐ Vaccination Rate
+                    /api/getVaccinationRate
+
+                ☐ Deaths
+                    /api/getDeaths
+                ☐ Maybe a little slidebar at the bottom that allows the changing of date
+    ☐ Yarn script to start the backend
+        Maybe even a script to start the whole thing
+    ☐ Other items
+        ☐ compare the county to the state
+        ☐ compare the county to another county
+        ☐ compare state to state
+        ☐ compare x to country
+    ✔ Add support for backend @done(21-11-15 15:16)
+    ✔ Split updater from the server @done(21-11-15 15:12)
+        this will allow easier restarting of the server, currently on every restart the data needs to be downloaded
+    ✔ Add fips support @done(21-11-15 15:12)
+    ✔ Searchbar QOL @done(21-11-03 13:48)
+        ✔ clicking on item in dropdown auto submits @done(21-11-03 13:48)
+        ✔ using arrow keys fills in the search bar @done(21-11-03 13:48)
+    ✔ Slight bounds issue the west coast bound is a little too far over @done(21-11-03 13:55)
+        ✔ move and scale puerto rico @done(21-10-27 12:13)
+        ✔ move the state @done(21-10-27 12:03)
+        ✔ move the counties @done(21-10-27 12:13)
+    ✔ bounding box @done(21-10-27 12:03)
+    ✔ move map to its own component @done(21-11-01 11:00)
+    ✘ make it so when hovered over the empty area no state is highlighted @cancelled(21-11-02 22:19)
+        I no longer only render the state initially. 
+    ✔ hawaii is broken @done(21-11-01 12:46)
+    ✔ search bar @done(21-11-01 13:17)
+        ✔ fix special characters in names of counties @done(21-10-27 13:41)
+        ✔ create autocomplete data @done(21-10-27 13:45)
+        ✔ create the data to relate search terms to fips code @done(21-10-27 13:56)
+        ✔ create component @done(21-11-01 10:54)
+        ✔ style @done(21-11-01 13:17)
+            ✔ move to center @done(21-11-01 13:17)
+            ✔ appear over the map @done(21-11-01 13:17)
+            ✔ color scheme @done(21-11-01 13:17)
+    ✔ hover over county boxes @done(21-11-02 22:15)
+        have it just show the name of the county
+    
+    ✔ side panel @done(21-11-02 22:20)
+        this is where the covid data will show, i need the think about what the default state of this area should be
+        maybe its just blank, or maybe when you click the map or search the style changes to the move the map to left instead of it being centered
+        ✔ when a user searches for a  county this area is updated @done(21-11-02 20:39)
+            ✔ convert map to component @done(21-11-02 15:58)
+                this fill fix a lingering issue where the map is disjoint of the rest of the program.
+            ✔ make it so the map size is updated when the sidebar is created, this will allow for the sidebar to have room @done(21-11-02 17:03)
+
+         
+        ✔ when a user clicks on a county this area is updated @done(21-11-02 20:39)
+            ✘ move relational.json to be more accessable to documents that require it @cancelled(21-11-02 20:39)
+                This wasn't needed, instead another file was generated to house what each state was.
+
+    ✔ upload to github @done(21-11-01 13:40)
+    ✔ small issue with the naming conventin in the county data ("baltimore" used twice for mayland as "baltimore city" doesn't exist by name) @done(21-11-02 22:15)
+        ✔ I need to find all duplicate values in the autocomplete.json file @done(21-11-02 22:14)
+            These are the instances where multiple similar names can't be differentiated in terms of FIPS which creates an issue where two
+            different counties retrieve the same data.
+            Interesting Case
+                Beford, VA - In 2013 the county and the city recombined
+                    This will need to be evaluated based off the data from NYT 
+                    For now i renamed the county to Bedford County
