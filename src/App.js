@@ -2,7 +2,10 @@ import './App.css';
 import Map from './components/map/Map';
 import SearchBar from './components/search/SearchBar';
 import SideBar from './components/sidebar/SideBar'
-import React from "react";
+import React, { useState } from "react";
+import Toggler from './components/ToggleTheme/toggler'; 
+
+
 
 class App extends React.Component {
 
@@ -22,8 +25,10 @@ class App extends React.Component {
         positive_pct : 0,
         severity : 0,
         complete : 0,
+        isToggled: true
     };
     this.updateCounty = this.updateCounty.bind(this);
+    this.toggleLightDark = this.toggleLightDark.bind(this);
 }
   
   async updateCounty(id){
@@ -43,25 +48,44 @@ class App extends React.Component {
                 });
             })
         });
+
         
     
   }
 
+  getLightOrDark() {
+    if (this.state.isToggled) {
+      
+      return("dark-mode");
+    }
+    else {
+      return("light-mode")
+    }
+  }
+
+  toggleLightDark() { 
+    this.setState(prevState => ({
+      isToggled : !prevState.isToggled }));
+  };
+
+
   render () {
       return(
-        <div>          
-          <SearchBar handler={this.updateCounty}/>
+        <div className={this.getLightOrDark()}>  
+               
+          <SearchBar handler={this.updateCounty}/> 
           <div className="container"> 
             <Map handler={this.updateCounty} update={this.state.selectedCounty ? true : false}/>
             {this.state.selectedCounty ? 
           
             <SideBar countyName={this.state.selectedCounty} cases={this.state.cases} positivity={this.state.positive_pct} severity={this.state.severity} vaccinations={this.state.complete} />
-          
-          
+            
             : null} 
-        </div>
-          
 
+          
+          </div>
+          <Toggler rounded={true} onToggle={this.toggleLightDark}/>  
+          
         </div>
       );
 

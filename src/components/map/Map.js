@@ -7,6 +7,7 @@ import FIPStoState from './toState.json';
 import React from 'react';
 
 
+
 class Map extends React.Component {
   
   constructor(props) {
@@ -32,7 +33,8 @@ class Map extends React.Component {
     this.bounds = L.latLngBounds(L.latLng(51,-127), L.latLng(17,-64))
     this.onEachFeature = this.onEachFeature.bind(this);
     this.updateProps = this.updateProps.bind(this);
-  }
+  };
+
 
   /* 
     Add events to each counties geoJSON layer. This allows for the hovering to display the county name and state.
@@ -70,6 +72,7 @@ class Map extends React.Component {
                       zoom={4.8} center={[35, -95.83]} zoomDelta={0.33} zoomSnap={0} minZoom={4.6}
                       maxBounds={this.bounds}
                       whenCreated={ mapInstance => { this.leafletMap.current = mapInstance } }>
+          
           <GeoJSON 
             style={this.countyStyle}
             data={countyData.features}
@@ -80,6 +83,7 @@ class Map extends React.Component {
             data={statesData.features}
             interactive={false}
           />
+          
         </MapContainer>
       </div>
     );
