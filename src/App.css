@@ -6,70 +6,17 @@ body {
   background-color: black;
 }
 
+/* Dark mode */
+
 .dark-mode {
-  background-color: black;
-}
-.dark-mode .sidebar{
-  border-left: 4px solid gray;
+  background-color: rgb(20,29,38);
 }
 
-.dark-mode .sidebarHeading{
-  color: #E1306C;;
-  text-align: center;
+.dark-mode .sidebarOpen{
+  border-left: 4px solid rgb(36,52,71);
 }
 
-.dark-mode .sidebarDetails{
-  text-align: center;
-  color: #FFFFFF;
-}
-
-.light-mode {
-  background-color:white;
-} 
-.light-mode .sidebar{
-  border-left: 4px solid black;
-}
-
-.light-mode .sidebarHeading{
-  color: rgb(0, 110, 255);
-  text-align: center;
-}
-
-.light-mode .sidebarDetails{
-  text-align: center;
-  color: black;
-}
-
-.searchbar {
-  padding: 2vh 0vh;
-  text-align: center;
-  position: relative;
-  z-index: 9;
-}
-
-.mapdiv {
-  z-index: 0;
-}
-
-.container {
-  display: grid;
-  justify-content: center;
-  grid-template-columns: 3fr 1fr;
-
-}
-.sidebarClosed{
-  right: 0px;
-  position: absolute;
-}
-
-
-button {
-  background-color: transparent;
-  cursor: pointer;
-  color: #EC6A32;
-}
-
-.sidebarHide {
+.dark-mode .sidebarHide {
   border: none;
   border-top: 4px solid #4F5D75;
   border-bottom: 4px solid #4F5D75;
@@ -80,7 +27,17 @@ button {
   border-bottom-right-radius: 4px;
 }
 
-.sidebarShow {
+.dark-mode .sidebarHeading{
+  color: rgb(197,31,93);
+  text-align: center;
+}
+
+.dark-mode .sidebarDetails{
+  text-align: center;
+  color: #FFFFFF;
+}
+
+.dark-mode .sidebarShow {
   border: none;
   border-top: 4px solid #4F5D75;
   border-bottom: 4px solid #4F5D75;
@@ -89,4 +46,98 @@ button {
   border-bottom-left-radius: 4px;
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
+}
+
+.dark-mode button {
+  background-color: transparent;
+  cursor: pointer;
+  color: rgb(197,31,93);
+}
+
+.dark-mode .searchbar {
+  padding: 2vh 0vh;
+  text-align: center;
+  position: relative;
+  z-index: 9;
+  background-color:#243447;
+}
+
+.dark-mode .searchBox {
+  background-color: rgb(20,29,38);
+}
+
+/* Light Mode */
+
+.light-mode {
+  background-color:#F5F8FA;
+} 
+.light-mode .sidebarOpen{
+  border-left: 4px solid #AAB8C2;
+}
+
+.light-mode .sidebarHide {
+  border: none;
+  border-top: 4px solid #4F5D75;
+  border-bottom: 4px solid #4F5D75;
+  border-right: 4px solid #4F5D75;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.light-mode .sidebarHeading{
+  color: #1DA1F2;
+  text-align: center;
+}
+
+.light-mode .sidebarDetails{
+  text-align: center;
+  color: black;
+}
+
+.light-mode .sidebarShow {
+  border: none;
+  border-top: 4px solid #4F5D75;
+  border-bottom: 4px solid #4F5D75;
+  border-left: 4px solid #4F5D75;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.light-mode button {
+  background-color: transparent;
+  cursor: pointer;
+  color: #1DA1F2;
+}
+
+.light-mode .searchbar {
+  padding: 2vh 0vh;
+  text-align: center;
+  position: relative;
+  z-index: 9;
+  background-color: #F5F8FA;
+}
+
+.light-mode .searchBox {
+  background-color: #E1E8ED;
+}
+
+.sidebarClosed{
+  right: 0px;
+  position: absolute;
+}
+
+
+.mapdiv {
+  z-index: 0;
+}
+
+.container {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 3fr 1fr;
+
 }
