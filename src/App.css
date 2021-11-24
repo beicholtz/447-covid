@@ -55,9 +55,7 @@ body {
   display: grid;
   justify-content: center;
   grid-template-columns: 3fr 1fr;
-<<<<<<< HEAD
-}
-=======
+
 }
 .sidebarClosed{
   right: 0px;
@@ -92,4 +90,3 @@ button {
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
 }
->>>>>>> origin/main
