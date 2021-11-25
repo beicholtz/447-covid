@@ -9,18 +9,22 @@ body {
 /* Dark mode */
 
 .dark-mode {
-  background-color: rgb(20,29,38);
+  background-color: #131212;
 }
 
 .dark-mode .sidebarOpen{
-  border-left: 4px solid rgb(36,52,71);
+  border-radius: 40px;
+  border-left: 4px solid #131212;
+  border-right: 20px solid #131212;
+  border-top: 20px solid #131212;
+  border-bottom: 20px solid #131212;
+  background-color: #424242;
+  animation-duration: 1s;
+  animation-name: slidein;
 }
 
 .dark-mode .sidebarHide {
   border: none;
-  border-top: 4px solid #4F5D75;
-  border-bottom: 4px solid #4F5D75;
-  border-right: 4px solid #4F5D75;
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
   border-top-right-radius: 4px;
@@ -28,20 +32,27 @@ body {
 }
 
 .dark-mode .sidebarHeading{
-  color: rgb(197,31,93);
+  color: white;
+  font-size: 30px;
   text-align: center;
+  background-color: rgb(37, 37, 37);
+  border-radius: 5px;
+  margin: 10px 5px;
+  display: block;
 }
 
 .dark-mode .sidebarDetails{
   text-align: center;
   color: #FFFFFF;
+  background-color: rgb(37, 37, 37);
+  line-height: 1.6;
+  border-radius: 10px;
+  margin: 5px;
+
 }
 
 .dark-mode .sidebarShow {
   border: none;
-  border-top: 4px solid #4F5D75;
-  border-bottom: 4px solid #4F5D75;
-  border-left: 4px solid #4F5D75;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   border-top-right-radius: 0px;
@@ -49,37 +60,52 @@ body {
 }
 
 .dark-mode button {
-  background-color: transparent;
+  border-radius: 25px;
+  background-color: #C054BE;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  font-size: 16px;
+  margin: 17px -0px 0px 0px;
+  opacity: 0.6;
+  transition: 0.3s;
+  display: inline-block;
+  text-decoration: none;
   cursor: pointer;
-  color: rgb(197,31,93);
 }
+
+.dark-mode button:hover {opacity: 1}
 
 .dark-mode .searchbar {
   padding: 2vh 0vh;
   text-align: center;
   position: relative;
   z-index: 9;
-  background-color:#243447;
+  background-color: #424242;
 }
 
 .dark-mode .searchBox {
-  background-color: rgb(20,29,38);
+  background-color: #666060;
 }
 
 /* Light Mode */
 
 .light-mode {
-  background-color:#F5F8FA;
+  background-color:#eff1f3;
 } 
 .light-mode .sidebarOpen{
-  border-left: 4px solid #AAB8C2;
+  border-radius: 40px;
+  border-left: 4px solid #eff1f3;
+  border-right: 20px solid #eff1f3;
+  border-top: 20px solid #eff1f3;
+  border-bottom: 20px solid #eff1f3;
+  background-color: #d4d3d3;
+  animation-duration: 1s;
+  animation-name: slidein;
 }
 
 .light-mode .sidebarHide {
   border: none;
-  border-top: 4px solid #4F5D75;
-  border-bottom: 4px solid #4F5D75;
-  border-right: 4px solid #4F5D75;
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
   border-top-right-radius: 4px;
@@ -87,20 +113,26 @@ body {
 }
 
 .light-mode .sidebarHeading{
-  color: #1DA1F2;
+  color: black;
+  font-size: 30px;
   text-align: center;
+  background-color: rgb(192, 189, 189);
+  border-radius: 5px;
+  margin: 10px 5px;
+  display: block;
 }
 
 .light-mode .sidebarDetails{
   text-align: center;
   color: black;
+  background-color: rgb(192, 189, 189);
+  line-height: 1.6;
+  border-radius: 10px;
+  margin: 5px;
 }
 
 .light-mode .sidebarShow {
   border: none;
-  border-top: 4px solid #4F5D75;
-  border-bottom: 4px solid #4F5D75;
-  border-left: 4px solid #4F5D75;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   border-top-right-radius: 0px;
@@ -108,21 +140,34 @@ body {
 }
 
 .light-mode button {
-  background-color: transparent;
+  border-radius: 25px;
+  background-color: #1DA1F2;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  font-size: 16px;
+  margin: 17px -0px 0px 0px;
+  opacity: 0.6;
+  transition: 0.3s;
+  display: inline-block;
+  text-decoration: none;
   cursor: pointer;
-  color: #1DA1F2;
 }
+
+.dark-mode button:hover {opacity: 5}
 
 .light-mode .searchbar {
   padding: 2vh 0vh;
   text-align: center;
   position: relative;
   z-index: 9;
-  background-color: #F5F8FA;
+  background-color: #eff1f3;
+  border-bottom: 2px solid rgb(209, 204, 204);
 }
 
 .light-mode .searchBox {
   background-color: #E1E8ED;
+  border-color: rgb(156, 156, 156);
 }
 
 .sidebarClosed{
@@ -140,4 +185,16 @@ body {
   justify-content: center;
   grid-template-columns: 3fr 1fr;
 
+}
+
+@keyframes slidein {
+  from {
+    margin-left: 100%;
+    width: 300%;
+  }
+
+  to {
+    margin-left: 0%;
+    width: 100%;
+  }
 }
