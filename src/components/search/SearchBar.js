@@ -2,6 +2,7 @@ import React from "react";
 import autoComplete from "@tarekraafat/autocomplete.js/dist/autoComplete";
 import AutocompleteWords from './autocomplete.json';
 import relationalData from './relational.json';
+import Toggler from "../ToggleTheme/toggler";
 
 class SearchBar extends React.Component {
 
@@ -16,7 +17,7 @@ class SearchBar extends React.Component {
         when the form is submitted the data is passed to the sidebar
     */ 
     async handleSubmit(event) {
-        console.log(this.autoCompleteJS.input.value);
+        console.log(relationalData[this.autoCompleteJS.input.value]);
         event.preventDefault();
         this.props.handler([this.autoCompleteJS.input.value, relationalData[this.autoCompleteJS.input.value]]);
         event.target.reset();
@@ -62,13 +63,13 @@ class SearchBar extends React.Component {
     render () {
         return(
             <div className='searchbar'>
-                <form id="searchForm" onSubmit={this.handleSubmit}> 
+                <Toggler rounded={true} onToggle={this.props.lightdark}/>
+                <form id="searchForm" onSubmit={this.handleSubmit} autocomplete="off"> 
                     <input className='searchBox' id="autoComplete" name='county' />
                 </form>
             </div> 
         );
-  
     }
-  }
+}
 
 export default SearchBar

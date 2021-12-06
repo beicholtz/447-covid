@@ -8,11 +8,24 @@ const toggler = ( { rounded = false, onToggle }) => {
         'rounded': rounded
     })
 
+    function getText() {
+        onToggle();
+        var x = document.getElementById("toggleText");
+        if (x.innerHTML === 'Light Mode') {
+            x.innerHTML = "Dark Mode";
+            x.style.color = "white";
+        }
+        else {
+            x.innerHTML = "Light Mode";
+            x.style.color = "black";
+        }
+    }
+
     return (
         <label className="toggler">
-            <input type="checkbox" onChange={onToggle}/>
+            <input type="checkbox" onChange={getText}/>
             <span className={sliderCX}/>
-            
+            <p id="toggleText">Light Mode</p>
         </label>
     );
 };

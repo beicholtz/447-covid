@@ -13,6 +13,14 @@ class SideBar extends React.Component {
         this.setState({sidebarOpen: !this.state.sidebarOpen});
     }
 
+    convertDate() {
+        var date = new Date(this.props.date);
+        var year = date.getFullYear();
+        var month = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        return month + "/" + day + "/" + year;
+    }
+
     render () {
         if (this.props.isOpen) {
             if (this.props.countyName) {
@@ -21,6 +29,7 @@ class SideBar extends React.Component {
                         <button type="button" onClick={this.props.toggleSidebar} className="sidebarHide">Hide Sidebar</button>
                         <h1 className="sidebarHeading"> {this.props.countyName} </h1>
                         <h2 className="sidebarDetails">
+                            Date: {this.convertDate()}<br/>
                             Cases: {this.props.cases}<br/> 
                             Population Positive: {this.props.positivity}% <br />
                             Severity: {this.props.severity}<br />

@@ -7,13 +7,13 @@ Covid-map project:
             ☐ searching for counties that dont exist
             ☐ time ranges that dont exist
     ☐ Full-site things
-        ☐ Color changes (maybe light and dark mode)
+        ✔ Color changes (maybe light and dark mode) @done(21-12-05 21:35)
         ☐ Make it so you can just start typing to search
             this is so you dont really need a mouse to make the site work
     ☐ Searchbar
         ☐ Search for entire states
             ☐ combine all counties
-        ☐ deal with the submits of counties that don't exist.
+        ✔ deal with the submits of counties that don't exist. @done(21-12-05 21:35)
             Do i just choose the closest county
             do i put a little message that the county doesnt exist
             do i do nothing
@@ -22,9 +22,9 @@ Covid-map project:
     ☐ Sidebar
         I think it will default display the most recent results up top (1 day view)
         The graph will then show the trends for default the last month
-        ☐ Collapsable
-            ☐ Arrow that closes it
-            ☐ Animated
+        ✔ Collapsable @done(21-12-05 21:35)
+            ✔ Arrow that closes it @done(21-12-05 21:35)
+            ✔ Animated @done(21-12-05 21:35)
         ☐ Add Graph
             ☐ Shows trends
         ☐ Timescales

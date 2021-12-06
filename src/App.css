@@ -6,20 +6,42 @@ body {
   background-color: black;
 }
 
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+  text-align: center;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+
 /* Dark mode */
 
 .dark-mode {
-  background-color: #131212;
+  background-color: #111127;
 }
 
 .dark-mode .sidebarOpen{
   border-radius: 40px;
-  border-left: 4px solid #131212;
-  border-right: 20px solid #131212;
-  border-top: 20px solid #131212;
-  border-bottom: 20px solid #131212;
+  border-left: 12px solid #14142e;
+  border-right: 12px solid #14142e;
+  border-top: 20px solid #14142e;
+  border-bottom: 20px solid #14142e;
   background-color: #424242;
-  animation-duration: 1s;
+  animation-duration: 0.5s;
   animation-name: slidein;
 }
 
@@ -29,6 +51,8 @@ body {
   border-bottom-left-radius: 0px;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
+  margin-left: 5px;
+  border-radius: 8px;
 }
 
 .dark-mode .sidebarHeading{
@@ -57,6 +81,8 @@ body {
   border-bottom-left-radius: 4px;
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
+  border-radius: 8px;
+  margin-right: 1vw;
 }
 
 .dark-mode button {
@@ -67,7 +93,7 @@ body {
   text-align: center;
   font-size: 16px;
   margin: 17px -0px 0px 0px;
-  opacity: 0.6;
+  opacity: 0.8;
   transition: 0.3s;
   display: inline-block;
   text-decoration: none;
@@ -91,16 +117,17 @@ body {
 /* Light Mode */
 
 .light-mode {
-  background-color:#eff1f3;
+  background-color:#d3e3f3;
 } 
+
 .light-mode .sidebarOpen{
   border-radius: 40px;
-  border-left: 4px solid #eff1f3;
-  border-right: 20px solid #eff1f3;
-  border-top: 20px solid #eff1f3;
-  border-bottom: 20px solid #eff1f3;
+  border-left: 12px solid #e2e7ec;
+  border-right: 12px solid #e2e7ec;
+  border-top: 20px solid #e2e7ec;
+  border-bottom: 20px solid #e2e7ec;
   background-color: #d4d3d3;
-  animation-duration: 1s;
+  animation-duration: 0.5s;
   animation-name: slidein;
 }
 
@@ -110,6 +137,8 @@ body {
   border-bottom-left-radius: 0px;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
+  margin-left: 5px;
+  border-radius: 8px;
 }
 
 .light-mode .sidebarHeading{
@@ -136,7 +165,8 @@ body {
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px;
+  border-radius: 8px;
+  margin-right: 1vw;
 }
 
 .light-mode button {
@@ -147,7 +177,7 @@ body {
   text-align: center;
   font-size: 16px;
   margin: 17px -0px 0px 0px;
-  opacity: 0.6;
+  opacity: 0.8;
   transition: 0.3s;
   display: inline-block;
   text-decoration: none;
@@ -174,7 +204,6 @@ body {
   right: 0px;
   position: absolute;
 }
-
 
 .mapdiv {
   z-index: 0;

@@ -5,7 +5,14 @@
     left: 0;
     display: inline-block;
     width: 60px;
-    height: 34px
+    height: 34px;
+    margin-left: 1vw;
+    margin-top: 1vh;
+}
+
+.toggler p {
+    margin-left: 0.2vw;
+    white-space: nowrap;
 }
 
 .toggler input { 
