@@ -134,15 +134,26 @@ class App extends React.Component {
           }).then(function(response){
               let a;
               response.json().then(data =>{
-                  a = data
-                  req.setState({
-                    selectedCounty : id[0],
-                    cases : a.data[0][5],
-                    positive_pct : a.data[0][6],
-                    severity : a.data[0][7],
-                    complete : a.data[0][8],
-                    date : a.data[0][0]
-                  });
+                  a = data;
+                  if (a.data[0] !== undefined) {
+                    req.setState({
+                      selectedCounty : id[0],
+                      cases : a.data[0][5],
+                      positive_pct : a.data[0][6],
+                      severity : a.data[0][7],
+                      complete : a.data[0][8],
+                      date : a.data[0][0]
+                    });
+                  } else {
+                    req.setState({
+                      selectedCounty : id[0],
+                      cases : "Unavailable",
+                      positive_pct : "Unavailable",
+                      severity : "Unavailable",
+                      complete : "Unavailable",
+                      date : "Unavailable"
+                    });
+                  }
               })
           });
     } else {

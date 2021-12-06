@@ -108,6 +108,7 @@ body {
   position: relative;
   z-index: 9;
   background-color: #424242;
+  border-bottom: 2px solid rgb(37, 36, 36);
 }
 
 .dark-mode .searchBox {
@@ -213,7 +214,6 @@ body {
   display: grid;
   justify-content: center;
   grid-template-columns: 3fr 1fr;
-
 }
 
 @keyframes slidein {

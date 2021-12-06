@@ -14,6 +14,8 @@ class SideBar extends React.Component {
     }
 
     convertDate() {
+        if (this.props.date === "Unavailable")
+            return "Unavailable"
         var date = new Date(this.props.date);
         var year = date.getFullYear();
         var month = ("0" + (date.getMonth() + 1)).slice(-2);
