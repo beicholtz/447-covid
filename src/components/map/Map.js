@@ -41,7 +41,7 @@ class Map extends React.Component {
     This function implements the connection to the searchbar. This is done by using the handler prop.
   */
   onEachFeature(feature, layer){
-    layer.bindPopup(feature.properties.NAME + ", " + FIPStoState[feature.properties.STATE])
+    layer.bindPopup(feature.properties.NAME + ", " + FIPStoState[feature.properties.STATE], {closeButton:false})
     layer.on({
       mouseover: function(e){layer.openPopup()},
       mouseout: function(e){layer.closePopup()},
