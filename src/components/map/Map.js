@@ -6,8 +6,6 @@ import statesData from './states.json';
 import FIPStoState from './toState.json';
 import React from 'react';
 
-
-
 class Map extends React.Component {
   
   constructor(props) {
@@ -35,7 +33,6 @@ class Map extends React.Component {
     this.updateProps = this.updateProps.bind(this);
   };
 
-
   /* 
     Add events to each counties geoJSON layer. This allows for the hovering to display the county name and state.
     This function implements the connection to the searchbar. This is done by using the handler prop.
@@ -54,7 +51,19 @@ class Map extends React.Component {
     Passes an Array with the name of the county and state and its FIPS code
   */
   updateProps(feature){
-    this.props.handler([feature.properties.NAME + ", " + FIPStoState[feature.properties.STATE] , feature.properties.STATE + feature.properties.COUNTY])
+    this.props.handler([feature.properties.NAME + ", " + FIPStoState[feature.properties.STATE], feature.properties.STATE + feature.properties.COUNTY])
+    var state; // Get state from county selected
+    statesData.features.forEach(function(n) {
+      // Search JSON array until state fips code found and store object
+      if (n['type'] === 'Feature' && n['properties']['STATE'] === feature.properties['STATE'])
+        state = n;
+      // Hawaii is a feature collection and needs to be treated different
+      if (n['type'] === 'FeatureCollection' && n['features'][0].properties['STATE'] === feature.properties['STATE'])
+        state = n['features'][0]
+    })
+    // Set bounds and invalidate size to keep map size
+    this.leafletMap.current.fitBounds(L.geoJSON(state).getBounds().pad(0.2));
+    this.leafletMap.current.invalidateSize();
   }
 
   /* 
@@ -83,12 +92,10 @@ class Map extends React.Component {
             data={statesData.features}
             interactive={false}
           />
-          
         </MapContainer>
       </div>
     );
   }
-
 
 }
 export default Map;
