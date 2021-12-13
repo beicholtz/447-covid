@@ -188,7 +188,7 @@ class App extends React.Component {
           </div>
           <SearchBar handler={this.updateCounty} lightdark={this.toggleLightDark}/>
           <div className="container"> 
-            <Map handler={this.updateCounty} update={this.state.selectedCounty ? true : false}/>
+            <Map handler={this.updateCounty} update={this.state.selectedCounty ? true : false} shiftLeft={this.state.sidebarOpen}/>
             <SideBar date={this.state.date} countyName={this.state.selectedCounty} cases={this.state.cases} positivity={this.state.positive_pct} severity={this.state.severity} vaccinations={this.state.complete} isOpen={this.state.sidebarOpen} toggleSidebar={this.handleViewSidebar}/>
           </div>
         </div>

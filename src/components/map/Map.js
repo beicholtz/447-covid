@@ -70,7 +70,12 @@ class Map extends React.Component {
     Called when the props update. For now this controls the map moving over to allow for the sidebar to have room
   */
   componentDidUpdate(){
-    document.getElementById("transformOnChange").style.width="75vw";  
+    if (this.props.shiftLeft){
+      document.getElementById("transformOnChange").style.width="75vw";  
+    }
+    else {
+      document.getElementById("transformOnChange").style.width="100vw";  
+    }
     this.leafletMap.current.invalidateSize();
   }
 
@@ -78,7 +83,7 @@ class Map extends React.Component {
     return (
       <div className="mapdiv" id="transformOnChange" style={{width: '100vw'}}> 
         <MapContainer style={{height: "90vh", width: 'inherit', background:"transparent"}} 
-                      zoom={4.8} center={[35, -95.83]} zoomDelta={0.33} zoomSnap={0} minZoom={4.6}
+                      zoom={4.8} center={[40, -95.83]} zoomDelta={0.33} zoomSnap={0} minZoom={4.6}
                       maxBounds={this.bounds}
                       whenCreated={ mapInstance => { this.leafletMap.current = mapInstance } }>
           
