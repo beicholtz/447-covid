@@ -34,7 +34,19 @@ body {
   top: 0;
   right: 0;
   display: inline-block;
-  margin-top: 1vh;
+  margin-top: 2vh;
+  margin-right: 3vw;
+}
+
+.singleDate .dateTextSlot {
+  float: left;
+  margin-top: 0vh;
+  margin-right: 1vw;
+  word-wrap: Normal;
+}
+
+.singleDate .dateText {
+  margin-top: 0vh;
 }
 
 .rangeDate {
