@@ -89,8 +89,6 @@ class SearchBar extends React.Component {
     changeDate(singleDate) {
         if (singleDate !== undefined && singleDate !== null)
             document.getElementById("dateText").innerHTML = singleDate.format("MM/DD/YYYY")
-        else
-            document.getElementById("dateText").innerHTML = "None"
     }
 
     render() {
