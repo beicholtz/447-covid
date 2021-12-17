@@ -58,12 +58,14 @@ vaccinationHeaders = [
   undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined
 ];
 
-console.log( vaccinationHeaders.length );
-
 function repeatWithDelim( s, c, d ) {
   r = s;
   for ( let i = 1; i < c; i++ ) r += d + s;
   return r;
+}
+
+function isValidISO8601Date( s ) {
+  return s && /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test( s );
 }
 
 function loadVaccinationData( vaccinationDataCsvStr, callback = undefined ) {
@@ -194,7 +196,7 @@ const server = http.createServer( ( req, res ) => {
     if ( path === "/api/getdata" && method == "GET" ) {
       let query = qs.parse( queries );
       // Parse the time ranges and return the appropriate data, or return an error code if unavailable
-      if ( query.start && query.end ) {
+      if ( isValidISO8601Date( query.start ) && isValidISO8601Date( query.end ) ) {
         let statement = query.fips ? `SELECT vaccinations.*, cases.* FROM vaccinations LEFT JOIN cases ON v_date = c_date AND v_fips = c_fips WHERE ( v_date >= $start AND v_date <= $end AND v_fips = $fips ) OR ( c_date >= $start AND c_date <= $end AND c_fips = $fips )
               UNION ALL
               SELECT vaccinations.*, cases.* FROM cases LEFT JOIN vaccinations ON v_date = c_date AND v_fips = c_fips WHERE ( v_date >= $start AND v_date <= $end AND v_fips = $fips ) OR ( c_date >= $start AND c_date <= $end AND c_fips = $fips ) AND v_date IS NULL AND v_fips IS NULL` :
