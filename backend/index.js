@@ -55,7 +55,7 @@ vaccinationHeaders = [
   'Series_Complete_18PlusPop_Pct',
   'Series_Complete_65Plus',
   'Series_Complete_65PlusPop_Pct',
-  undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined
+  undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined
 ];
 
 function repeatWithDelim( s, c, d ) {
@@ -204,10 +204,12 @@ const server = http.createServer( ( req, res ) => {
           if ( error ) {
             console.log( error );
             res.statusCode = 500;
+            res.setHeader("Access-Control-Allow-Origin", '*');
             res.setHeader( 'Content-Type', 'application/json' );
             res.end( '{"status":500,"message":"Error querying database"}' );
           } else {
             res.statusCode = 200;
+            res.setHeader("Access-Control-Allow-Origin", '*');
             res.setHeader( 'Content-Type', 'application/json' );
             let result = { "data": [], "headers": [ "date", "fips", "county_name",  "state_name", "state", "complete_pct", "complete_12", "complete_12_pct", "complete_18", "complete_18_pct", "complete_65", "complete_65_pct", "cases", "cases_avg", "case_avg_per_100k", "deaths", "deaths_avg", "deaths_avg_per_100k" ] };
             for ( let i = 0; i < rows.length; i++ ) {
@@ -219,6 +221,7 @@ const server = http.createServer( ( req, res ) => {
         } );
       } else {
           res.statusCode = 400;
+          res.setHeader("Access-Control-Allow-Origin", '*');
           res.setHeader( 'Content-Type', 'application/json' );
           res.end( '{"status":400,"message":"Invalid params"}' );
       }
@@ -226,12 +229,14 @@ const server = http.createServer( ( req, res ) => {
       fileServer.serve( req, res, ( e, response ) => {
         if ( e ) {
           res.statusCode = 404;
+          res.setHeader("Access-Control-Allow-Origin", '*');
           res.setHeader( 'Content-Type', 'text/plain' );
           res.end( '404 File not found' );
         }
       } );
     } else {
       res.statusCode = 400;
+      res.setHeader("Access-Control-Allow-Origin", '*');
       res.setHeader( 'Content-Type', 'text/plain' );
       res.end( '400 Bad request' );
     }

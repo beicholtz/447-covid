@@ -16,16 +16,13 @@ class SearchBar extends React.Component {
         this.componentDidMount = this.componentDidMount.bind(this);
         this.autoCompleteJS = undefined;
         this.state = {
-            singleDate: null,
-            minDate: moment().subtract(2, 'days'),
+            singleDate: moment().subtract(1, 'days'),
+            minDate: moment("2020-01-21", "YYYY-MM-DD"),
             maxDate: moment(),
             focused: false,
         }
         this.onFocusChange = this.onFocusChange.bind(this);
-
-
     };
-
 
     /*
         when the form is submitted the data is passed to the sidebar
@@ -108,7 +105,7 @@ class SearchBar extends React.Component {
                         isOutsideRange={date => date.isBefore(this.state.minDate) || date.isAfter(this.state.maxDate)}
                     />
                     <p className="dateTextSlot">
-                        Selected Date: <p className="dateText" id="dateText">None</p>
+                        Selected Date: <p className="dateText" id="dateText">{moment().subtract(1, 'days').format("MM/DD/YYYY")}</p>
                     </p>
                 </div>
             </div>
