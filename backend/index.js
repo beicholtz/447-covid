@@ -55,8 +55,10 @@ vaccinationHeaders = [
   'Series_Complete_18PlusPop_Pct',
   'Series_Complete_65Plus',
   'Series_Complete_65PlusPop_Pct',
-  undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined
+  undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined
 ];
+
+console.log( vaccinationHeaders.length );
 
 function repeatWithDelim( s, c, d ) {
   r = s;
@@ -205,6 +207,7 @@ const server = http.createServer( ( req, res ) => {
             console.log( error );
             res.statusCode = 500;
             res.setHeader( 'Content-Type', 'application/json' );
+            res.setHeader( 'Access-Control-Allow-Origin', '*' );
             res.end( '{"status":500,"message":"Error querying database"}' );
           } else {
             res.statusCode = 200;
@@ -221,6 +224,7 @@ const server = http.createServer( ( req, res ) => {
       } else {
           res.statusCode = 400;
           res.setHeader( 'Content-Type', 'application/json' );
+          res.setHeader( 'Access-Control-Allow-Origin', '*' );
           res.end( '{"status":400,"message":"Invalid params"}' );
       }
     } else if ( method === "GET" ) {
@@ -228,12 +232,14 @@ const server = http.createServer( ( req, res ) => {
         if ( e ) {
           res.statusCode = 404;
           res.setHeader( 'Content-Type', 'text/plain' );
+          res.setHeader( 'Access-Control-Allow-Origin', '*' );
           res.end( '404 File not found' );
         }
       } );
     } else {
       res.statusCode = 400;
       res.setHeader( 'Content-Type', 'text/plain' );
+      res.setHeader( 'Access-Control-Allow-Origin', '*' );
       res.end( '400 Bad request' );
     }
   } ).resume();
