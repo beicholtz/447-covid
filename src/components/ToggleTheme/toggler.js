@@ -13,11 +13,11 @@ const toggler = ( { rounded = false, onToggle }) => {
         var x = document.getElementById("toggleText");
         if (x.innerHTML === 'Light Mode') {
             x.innerHTML = "Dark Mode";
-            x.style.color = "white";
+            document.body.style.color = "white"
         }
         else {
             x.innerHTML = "Light Mode";
-            x.style.color = "black";
+            document.body.style.color = "black"
         }
     }
 
