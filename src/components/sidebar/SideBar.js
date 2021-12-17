@@ -1,12 +1,20 @@
 import React from "react";
+import 'react-dates/lib/css/_datepicker.css';
+import 'react-dates/initialize';
+import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
+import moment from "moment";
 
 class SideBar extends React.Component {
-    /*
-        TODO
-            Allow for closing the sidebar
-    */
+
     constructor(props) {
         super(props)
+        this.state = {
+            startDate: null,
+            endDate: null,
+            minDate: moment().subtract(2, 'days'),
+            maxDate: moment(),
+            focusedInput: false,
+        }
     }
 
     toggleSidebar () {
@@ -23,6 +31,15 @@ class SideBar extends React.Component {
         return month + "/" + day + "/" + year;
     }
 
+
+    componentDidUpdate(prevProps) {
+        const {focusedInput, startDate, endDate} = this.state;
+        if (!focusedInput && (startDate && endDate)) {
+            this.props.getRangeDates(startDate, endDate)
+        }
+    }
+
+
     render () {
         if (this.props.isOpen) {
             if (this.props.countyName) {
@@ -37,6 +54,23 @@ class SideBar extends React.Component {
                             Severity: {this.props.severity}<br />
                             Population Vaccinated: {this.props.vaccinations}%
                         </h2>
+                        <br></br>
+                        <h2 className="sidebarDetails">
+                            See Date Range Statistics
+                        </h2>
+                        <div className = "rangeDate">
+                            <DateRangePicker
+                                startDate={this.state.startDate} // momentPropTypes.momentObj or null,
+                                startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
+                                endDate={this.state.endDate} // momentPropTypes.momentObj or null,
+                                endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
+                                onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
+                                focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+                                onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
+                                isOutsideRange={date => date.isBefore(this.state.minDate) || date.isAfter(this.state.maxDate)}
+                                />
+                        </div>
+                        
                     </div>
                 );
             } else {
