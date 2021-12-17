@@ -126,7 +126,7 @@ if ( !DB_EXISTS ) {
     loadVaccinationData( fs.readFileSync( "./vaccination-data.csv" ), () => { console.log( "Done loading vaccination data" ); } );
   } else {
     console.log( "Downloading vaccination data" );
-    https.get( "https://data.cdc.gov/resource/8xkx-amqh.csv", ( res ) => {
+    https.get( "https://data.cdc.gov/api/views/8xkx-amqh/rows.csv", ( res ) => {
       let vaccinationBody = "";
 
       res.on( "data", ( chunk ) => {
@@ -204,7 +204,6 @@ const server = http.createServer( ( req, res ) => {
           if ( error ) {
             console.log( error );
             res.statusCode = 500;
-            res.setHeader("Access-Control-Allow-Origin", '*');
             res.setHeader( 'Content-Type', 'application/json' );
             res.end( '{"status":500,"message":"Error querying database"}' );
           } else {
@@ -221,7 +220,6 @@ const server = http.createServer( ( req, res ) => {
         } );
       } else {
           res.statusCode = 400;
-          res.setHeader("Access-Control-Allow-Origin", '*');
           res.setHeader( 'Content-Type', 'application/json' );
           res.end( '{"status":400,"message":"Invalid params"}' );
       }
@@ -229,14 +227,12 @@ const server = http.createServer( ( req, res ) => {
       fileServer.serve( req, res, ( e, response ) => {
         if ( e ) {
           res.statusCode = 404;
-          res.setHeader("Access-Control-Allow-Origin", '*');
           res.setHeader( 'Content-Type', 'text/plain' );
           res.end( '404 File not found' );
         }
       } );
     } else {
       res.statusCode = 400;
-      res.setHeader("Access-Control-Allow-Origin", '*');
       res.setHeader( 'Content-Type', 'text/plain' );
       res.end( '400 Bad request' );
     }

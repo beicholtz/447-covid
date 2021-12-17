@@ -16,8 +16,6 @@ class App extends React.Component {
     this.state = {
         selectedCounty : 0,
         cases : 0,
-        positive_pct : 0,
-        severity : 0,
         complete : 0,
         deaths : 0,
         date : 0,
@@ -43,13 +41,12 @@ class App extends React.Component {
               let a;
               response.json().then(data =>{
                   a = data;
+                  console.log(data)
                   if (a.data[0] !== undefined) {
                     req.setState({
                       selectedCounty : id[0],
                       cases : a.data[0][12],
-                      positive_pct : a.data[0][5],
-                      severity : a.data[0][7],
-                      complete : a.data[0][8],
+                      complete : a.data[0][5] ? a.data[0][5] : 'Unavailable',
                       deaths : a.data[0][15],
                       date : a.data[0][0]
                     });
@@ -57,8 +54,6 @@ class App extends React.Component {
                     req.setState({
                       selectedCounty : id[0],
                       cases : "Unavailable",
-                      positive_pct : "Unavailable",
-                      severity : "Unavailable",
                       complete : "Unavailable",
                       deaths : "Unavailable", 
                       date : "Unavailable"
@@ -129,8 +124,6 @@ class App extends React.Component {
               countyName={this.state.selectedCounty} 
               cases={this.state.cases}
               deaths={this.state.deaths}
-              positivity={this.state.positive_pct} 
-              severity={this.state.severity} 
               vaccinations={this.state.complete} 
               isOpen={this.state.sidebarOpen} 
               toggleSidebar={this.handleViewSidebar} 

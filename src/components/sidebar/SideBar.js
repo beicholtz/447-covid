@@ -49,8 +49,6 @@ class SideBar extends React.Component {
                             Date: {this.convertDate()}<br/>
                             Cases: {this.props.cases}<br/> 
                             Deaths: {this.props.deaths}<br/>
-                            Population Positive: {this.props.positivity}% <br />
-                            Severity: {this.props.severity}<br />
                             Population Vaccinated: {this.props.vaccinations}%
                         </h2>
                         <br></br>
