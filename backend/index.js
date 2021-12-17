@@ -126,7 +126,7 @@ if ( !DB_EXISTS ) {
     loadVaccinationData( fs.readFileSync( "./vaccination-data.csv" ), () => { console.log( "Done loading vaccination data" ); } );
   } else {
     console.log( "Downloading vaccination data" );
-    https.get( "https://data.cdc.gov/resource/8xkx-amqh.csv", ( res ) => {
+    https.get( "https://data.cdc.gov/api/views/8xkx-amqh/rows.csv", ( res ) => {
       let vaccinationBody = "";
 
       res.on( "data", ( chunk ) => {
@@ -209,6 +209,7 @@ const server = http.createServer( ( req, res ) => {
           } else {
             res.statusCode = 200;
             res.setHeader( 'Content-Type', 'application/json' );
+            res.setHeader( 'Access-Control-Allow-Origin', '*' );
             let result = { "data": [], "headers": [ "date", "fips", "county_name",  "state_name", "state", "complete_pct", "complete_12", "complete_12_pct", "complete_18", "complete_18_pct", "complete_65", "complete_65_pct", "cases", "cases_avg", "case_avg_per_100k", "deaths", "deaths_avg", "deaths_avg_per_100k" ] };
             for ( let i = 0; i < rows.length; i++ ) {
               let row = rows[ i ];
