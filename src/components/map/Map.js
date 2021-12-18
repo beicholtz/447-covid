@@ -40,8 +40,8 @@ class Map extends React.Component {
   onEachFeature(feature, layer){
     layer.bindPopup(feature.properties.NAME + ", " + FIPStoState[feature.properties.STATE], {closeButton:false})
     layer.on({
-      mouseover: function(e){layer.openPopup()},
-      mouseout: function(e){layer.closePopup()},
+      mouseover: function(e){layer.openPopup(); layer.setStyle({fillColor: "#849CEA"})},
+      mouseout: function(e){layer.closePopup(); layer.setStyle({fillColor: "#EC6A32"})},
       click: () => this.updateProps(feature),
     });
   }
@@ -101,6 +101,6 @@ class Map extends React.Component {
       </div>
     );
   }
-
 }
+
 export default Map;

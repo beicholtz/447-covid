@@ -5,7 +5,6 @@ import SideBar from './components/sidebar/SideBar'
 import React from "react";
 import moment from 'moment'; 
 
-
 class App extends React.Component {
 
   async handleViewSidebar() {
@@ -17,9 +16,8 @@ class App extends React.Component {
     this.state = {
         selectedCounty : 0,
         cases : 0,
-        positive_pct : 0,
-        severity : 0,
         complete : 0,
+        deaths : 0,
         date : 0,
         isToggled : false,
         sidebarOpen : false,
@@ -29,7 +27,7 @@ class App extends React.Component {
     this.updateCounty = this.updateCounty.bind(this);
     this.handleViewSidebar = this.handleViewSidebar.bind(this);
     this.toggleLightDark = this.toggleLightDark.bind(this);
-
+    this.selectedDate = moment().subtract(1, 'days').format("YYYY-MM-DD")
   }
   
   async updateCounty(id){
@@ -37,28 +35,27 @@ class App extends React.Component {
     if (id[1] !== undefined) {
       document.getElementById("alert").style.display = "none";
       this.setState({sidebarOpen: true});
-      await fetch('http://localhost:3072/api/getdata?start=0&end=16281360000000&fips=' + id[1], {
+      await fetch('http://localhost:3072/api/getdata?start=' + this.selectedDate + '&end=' + this.selectedDate + '&fips=' + id[1], {
               method: 'GET'
           }).then(function(response){
               let a;
               response.json().then(data =>{
                   a = data;
+                  console.log(data)
                   if (a.data[0] !== undefined) {
                     req.setState({
                       selectedCounty : id[0],
-                      cases : a.data[0][5],
-                      positive_pct : a.data[0][6],
-                      severity : a.data[0][7],
-                      complete : a.data[0][8],
+                      cases : a.data[0][12],
+                      complete : a.data[0][5] ? a.data[0][5] : 'Unavailable',
+                      deaths : a.data[0][15],
                       date : a.data[0][0]
                     });
                   } else {
                     req.setState({
                       selectedCounty : id[0],
                       cases : "Unavailable",
-                      positive_pct : "Unavailable",
-                      severity : "Unavailable",
                       complete : "Unavailable",
+                      deaths : "Unavailable", 
                       date : "Unavailable"
                     });
                   }
@@ -87,7 +84,6 @@ class App extends React.Component {
     document.getElementById("alert").style.display = "none";
   }
 
-
   getRangeDates = (startDate, endDate) => {
     var startDateFormatted = [moment(startDate).date(), moment(startDate).month() + 1, moment(startDate).year()];
     var endDateFormatted = [moment(endDate).date(), moment(endDate).month() + 1, moment(endDate).year()];
@@ -97,22 +93,19 @@ class App extends React.Component {
 
   getSingleDate = (singleDate) => {
     var singleDateFormatted = [moment(singleDate).date(), moment(singleDate).month() + 1, moment(singleDate).year()];
-    alert(singleDateFormatted);
+    // alert(singleDateFormatted);
+    this.selectedDate = moment(singleDate).format("YYYY-MM-DD");
     return(singleDateFormatted)
   }
 
   render () 
    {
-      
       return(
-        
         <div className={this.getLightOrDark()}>  
-
           <div className="alert" id="alert" hidden>
             <span className="closebtn" onClick={this.closeAlert}>&times;</span> 
             <strong>Invalid Input</strong> Input must match autocomplete options (case sensitive).
           </div>
-
           <SearchBar 
             ref={this.SingleDate}
             handler={this.updateCounty} 
@@ -120,26 +113,22 @@ class App extends React.Component {
             getSingleDate={this.getSingleDate}
           />
           <div className="container"> 
-
             <Map 
                 handler={this.updateCounty} 
                 update={this.state.selectedCounty ? true : false} 
                 shiftLeft={this.state.sidebarOpen}
             />
-
             <SideBar 
               ref={this.RangeDates}
               date={this.state.date} 
               countyName={this.state.selectedCounty} 
-              cases={this.state.cases} 
-              positivity={this.state.positive_pct} 
-              severity={this.state.severity} 
+              cases={this.state.cases}
+              deaths={this.state.deaths}
               vaccinations={this.state.complete} 
               isOpen={this.state.sidebarOpen} 
               toggleSidebar={this.handleViewSidebar} 
               getRangeDates={this.getRangeDates}
               />
-
           </div>
         </div>
       );

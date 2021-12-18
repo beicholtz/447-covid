@@ -11,7 +11,7 @@ class SideBar extends React.Component {
         this.state = {
             startDate: null,
             endDate: null,
-            minDate: moment().subtract(2, 'days'),
+            minDate: moment("2020-01-21", "YYYY-MM-DD"),
             maxDate: moment(),
             focusedInput: false,
         }
@@ -24,13 +24,12 @@ class SideBar extends React.Component {
     convertDate() {
         if (this.props.date === "Unavailable")
             return "Unavailable"
-        var date = new Date(this.props.date);
-        var year = date.getFullYear();
-        var month = ("0" + (date.getMonth() + 1)).slice(-2);
-        var day = ("0" + date.getDate()).slice(-2);
+        var date = String(this.props.date).split("-")
+        var year = date[0]
+        var month = date[1]
+        var day = date[2]
         return month + "/" + day + "/" + year;
     }
-
 
     componentDidUpdate(prevProps) {
         const {focusedInput, startDate, endDate} = this.state;
@@ -38,7 +37,6 @@ class SideBar extends React.Component {
             this.props.getRangeDates(startDate, endDate)
         }
     }
-
 
     render () {
         if (this.props.isOpen) {
@@ -50,8 +48,7 @@ class SideBar extends React.Component {
                         <h2 className="sidebarDetails">
                             Date: {this.convertDate()}<br/>
                             Cases: {this.props.cases}<br/> 
-                            Population Positive: {this.props.positivity}% <br />
-                            Severity: {this.props.severity}<br />
+                            Deaths: {this.props.deaths}<br/>
                             Population Vaccinated: {this.props.vaccinations}%
                         </h2>
                         <br></br>
