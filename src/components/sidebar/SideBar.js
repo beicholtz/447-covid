@@ -1,7 +1,7 @@
 import React from "react";
 import 'react-dates/lib/css/_datepicker.css';
 import 'react-dates/initialize';
-import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
+import { DateRangePicker} from 'react-dates';
 import moment from "moment";
 
 class SideBar extends React.Component {

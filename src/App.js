@@ -45,7 +45,6 @@ class App extends React.Component {
               let a;
               response.json().then(data =>{
                   a = data;
-                  console.log(data)
                   if (a.data[0] !== undefined) {
                     req.setState({
                       currFips: id[1],

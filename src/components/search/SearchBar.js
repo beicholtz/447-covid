@@ -5,7 +5,7 @@ import relationalData from './relational.json';
 import Toggler from "../ToggleTheme/toggler";
 import 'react-dates/lib/css/_datepicker.css';
 import 'react-dates/initialize';
-import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
+import { SingleDatePicker} from 'react-dates';
 import moment from 'moment';
 
 class SearchBar extends React.Component {
@@ -92,7 +92,7 @@ class SearchBar extends React.Component {
         return (
             <div className='searchbar'>
                 <Toggler rounded={true} onToggle={this.props.lightdark} />
-                <form id="searchForm" onSubmit={this.handleSubmit} autocomplete="off">
+                <form id="searchForm" onSubmit={this.handleSubmit} autoComplete="off">
                     <input className='searchBox' id="autoComplete" name='county' />
                 </form>
                 <div className="singleDate">
@@ -104,9 +104,9 @@ class SearchBar extends React.Component {
                         id="your_unique_id" // PropTypes.string.isRequired,
                         isOutsideRange={date => date.isBefore(this.state.minDate) || date.isAfter(this.state.maxDate)}
                     />
-                    <p className="dateTextSlot">
+                    <div className="dateTextSlot">
                         Selected Date: <p className="dateText" id="dateText">{moment().subtract(1, 'days').format("MM/DD/YYYY")}</p>
-                    </p>
+                    </div>
                 </div>
             </div>
         );

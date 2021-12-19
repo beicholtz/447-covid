@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import {MapContainer, GeoJSON} from 'react-leaflet'; //useMap
+import {MapContainer, GeoJSON, LayersControl, LayerGroup} from 'react-leaflet'; //useMap
 import countyData from './mapData.json';
 import "leaflet/dist/leaflet.css";
 import statesData from './states.json';
@@ -7,9 +7,10 @@ import FIPStoState from './toState.json';
 import React from 'react';
 
 class Map extends React.Component {
-  
+  // TODO: Move placement of where the layer control is
   constructor(props) {
     super(props);
+
     this.countyStyle = {
       fillColor: '#EC6A32',
       weight: 1,
@@ -27,11 +28,96 @@ class Map extends React.Component {
     }
 
     this.leafletMap = React.createRef();
-    this.chosenState = undefined
-    this.bounds = L.latLngBounds(L.latLng(51,-127), L.latLng(17,-64))
+    this.chosenState = undefined;
+    this.choroplethData = {};
+    this.bounds = L.latLngBounds(L.latLng(51,-127), L.latLng(17,-64));
+    this.dataLoaded = false;
+    
     this.onEachFeature = this.onEachFeature.bind(this);
     this.updateProps = this.updateProps.bind(this);
+    this.vaccinationStyle = this.vaccinationStyle.bind(this);
+    this.caseStyle = this.caseStyle.bind(this);
+    this.deathStyle = this.deathStyle.bind(this);
   };
+
+  getVaccinationColor(d){
+    let tmp = this.choroplethData[d];
+    if(!tmp){
+      return '#000000'
+    }
+    return tmp[0] > 80? '#800026' :
+    tmp[0] > 70  ? '#BD0026' :
+    tmp[0] > 60  ? '#E31A1C' :
+    tmp[0] > 50  ? '#FC4E2A' :
+    tmp[0] > 40  ? '#FD8D3C' :
+    tmp[0] > 30   ? '#FEB24C' :
+    tmp[0] > 20  ? '#FED976' :
+                      '#FFEDA0';
+  }
+
+  vaccinationStyle(feature){
+    let req = this;
+    return {
+      fillColor: req.getVaccinationColor(feature.properties.STATE + feature.properties.COUNTY),
+      weight: 1,
+      opacity: 1,
+      color: 'black',
+      fillOpacity: 1
+    }
+  }
+
+  getCaseColor(d){
+    let tmp = this.choroplethData[d];
+    if(!tmp){
+      return '#000000'
+    }
+    return tmp[1] > 25? '#800026' :
+    tmp[1] > 15  ? '#BD0026' :
+    tmp[1] > 10  ? '#E31A1C' :
+    tmp[1] > 5  ? '#FC4E2A' :
+    tmp[1] > 4 ? '#FD8D3C' :
+    tmp[1] > 3   ? '#FEB24C' :
+    tmp[1] > 2  ? '#FED976' :
+                      '#FFEDA0';
+  }
+
+  caseStyle(feature){
+    let req = this;
+    return {
+      fillColor: req.getCaseColor(feature.properties.STATE + feature.properties.COUNTY),
+      weight: 1,
+      opacity: 1,
+      color: 'black',
+      fillOpacity: 1
+    }
+  }
+
+  getDeathColor(d){
+    let tmp = this.choroplethData[d];
+    if(!tmp){
+      return '#000000'
+    }
+    return tmp[1] > 25? '#800026' :
+    tmp[1] > 15  ? '#BD0026' :
+    tmp[1] > 10  ? '#E31A1C' :
+    tmp[1] > 5  ? '#FC4E2A' :
+    tmp[1] > 4 ? '#FD8D3C' :
+    tmp[1] > 3   ? '#FEB24C' :
+    tmp[1] > 2  ? '#FED976' :
+                      '#FFEDA0';
+  }
+
+  deathStyle(feature){
+    let req = this;
+    return {
+      fillColor: req.getDeathColor(feature.properties.STATE + feature.properties.COUNTY),
+      weight: 1,
+      opacity: 1,
+      color: 'black',
+      fillOpacity: 1
+    }
+  }
+
 
   /* 
     Add events to each counties geoJSON layer. This allows for the hovering to display the county name and state.
@@ -40,8 +126,8 @@ class Map extends React.Component {
   onEachFeature(feature, layer){
     layer.bindPopup(feature.properties.NAME + ", " + FIPStoState[feature.properties.STATE], {closeButton:false})
     layer.on({
-      mouseover: function(e){layer.openPopup(); layer.setStyle({fillColor: "#849CEA"})},
-      mouseout: function(e){layer.closePopup(); layer.setStyle({fillColor: "#EC6A32"})},
+      mouseover: function(e){layer.openPopup()},
+      mouseout: function(e){layer.closePopup()},
       click: () => this.updateProps(feature),
     });
   }
@@ -79,6 +165,27 @@ class Map extends React.Component {
     this.leafletMap.current.invalidateSize();
   }
 
+  componentDidMount(){
+    let req = this;
+    fetch('http://localhost:3072/api/getdata?start=2021-12-16&end=2021-12-16' + this.selectedDate, {
+              method: 'GET'
+          }).then(function(response){
+            let dict = {}
+              response.json().then(data =>{
+                  for(var i in data.data){
+                    let  j = data.data[i]
+                    dict[j[1]] = [j[5],j[13],j[16]];
+                  }
+                  req.choroplethData = dict;
+                  req.dataLoaded = true;
+                  req.setState({});
+                  req.leafletMap.current.invalidateSize();
+              })      
+          });
+    
+    
+  }
+
   render() {
     return (
       <div className="mapdiv" id="transformOnChange" style={{width: '100vw'}}> 
@@ -86,17 +193,74 @@ class Map extends React.Component {
                       zoom={4.8} center={[40, -95.83]} zoomDelta={0.33} zoomSnap={0} minZoom={4.6}
                       maxBounds={this.bounds}
                       whenCreated={ mapInstance => { this.leafletMap.current = mapInstance } }>
+          {this.dataLoaded ?
+          <LayersControl position="topleft">
+            <LayersControl.BaseLayer checked name="Default view">
+              <LayerGroup>
+                <GeoJSON 
+                  style={this.countyStyle}
+                  data={countyData.features}
+                  onEachFeature={this.onEachFeature}
+                  />
+                <GeoJSON 
+                  style={this.stateStyle}
+                  data={statesData.features}
+                  interactive={false}
+                />
+              </LayerGroup>
+              
+            </LayersControl.BaseLayer>
+            
+            <LayersControl.BaseLayer name="Vaccinations">
+              <LayerGroup>
+                  <GeoJSON 
+                    style={this.vaccinationStyle}
+                    data={countyData.features}
+                    onEachFeature={this.onEachFeature}
+                    />
+                  <GeoJSON 
+                    style={this.stateStyle}
+                    data={statesData.features}
+                    interactive={false}
+                  />
+              </LayerGroup>
+            </LayersControl.BaseLayer>
+
+            <LayersControl.BaseLayer name="Cases">
+              <LayerGroup>
+                  <GeoJSON 
+                    style={this.caseStyle}
+                    data={countyData.features}
+                    onEachFeature={this.onEachFeature}
+                    />
+                  <GeoJSON 
+                    style={this.stateStyle}
+                    data={statesData.features}
+                    interactive={false}
+                  />
+              </LayerGroup>
+            </LayersControl.BaseLayer>
+
+            <LayersControl.BaseLayer name="Deaths">
+              <LayerGroup>
+                  <GeoJSON 
+                    style={this.deathStyle}
+                    data={countyData.features}
+                    onEachFeature={this.onEachFeature}
+                    />
+                  <GeoJSON 
+                    style={this.stateStyle}
+                    data={statesData.features}
+                    interactive={false}
+                  />
+              </LayerGroup>
+            </LayersControl.BaseLayer>
+            
+          </LayersControl>
+          : null}
+
+
           
-          <GeoJSON 
-            style={this.countyStyle}
-            data={countyData.features}
-            onEachFeature={this.onEachFeature}
-          />
-          <GeoJSON 
-            style={this.stateStyle}
-            data={statesData.features}
-            interactive={false}
-          />
         </MapContainer>
       </div>
     );
