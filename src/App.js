@@ -14,6 +14,8 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+        currFips: null,
+        statsData: [],
         selectedCounty : 0,
         cases : 0,
         complete : 0,
@@ -22,12 +24,14 @@ class App extends React.Component {
         isToggled : false,
         sidebarOpen : false,
     };
-    this.SingleDate = React.createRef();
-    this.RangeDates = React.createRef();
     this.updateCounty = this.updateCounty.bind(this);
     this.handleViewSidebar = this.handleViewSidebar.bind(this);
     this.toggleLightDark = this.toggleLightDark.bind(this);
     this.selectedDate = moment().subtract(1, 'days').format("YYYY-MM-DD")
+    this.startDate = moment().subtract(2, 'days').format("YYYY-MM-DD")
+    this.endDate = moment().subtract(1, 'days').format("YYYY-MM-DD")
+    this.getRangeData = this.getRangeData.bind(this)
+
   }
   
   async updateCounty(id){
@@ -44,6 +48,7 @@ class App extends React.Component {
                   console.log(data)
                   if (a.data[0] !== undefined) {
                     req.setState({
+                      currFips: id[1],
                       selectedCounty : id[0],
                       cases : a.data[0][12],
                       complete : a.data[0][5] ? a.data[0][5] : 'Unavailable',
@@ -85,18 +90,42 @@ class App extends React.Component {
   }
 
   getRangeDates = (startDate, endDate) => {
-    var startDateFormatted = [moment(startDate).date(), moment(startDate).month() + 1, moment(startDate).year()];
-    var endDateFormatted = [moment(endDate).date(), moment(endDate).month() + 1, moment(endDate).year()];
-    alert([[startDateFormatted, endDateFormatted]])
-    return([startDateFormatted, endDateFormatted])
+    this.startDate = moment(startDate).format("YYYY-MM-DD");
+    this.endDate = moment(endDate).format("YYYY-MM-DD");
+    this.getRangeData()
   }
 
   getSingleDate = (singleDate) => {
-    var singleDateFormatted = [moment(singleDate).date(), moment(singleDate).month() + 1, moment(singleDate).year()];
-    // alert(singleDateFormatted);
     this.selectedDate = moment(singleDate).format("YYYY-MM-DD");
-    return(singleDateFormatted)
   }
+
+  async getRangeData() {
+    let req = this;
+
+    if (this.state.currFips !== undefined && this.state.currFips) {
+      document.getElementById("alert").style.display = "none";
+      await fetch('http://localhost:3072/api/getdata?start=' + this.state.startDate + '&end=' + this.state.endDate + '&fips=' + this.state.currFips, {
+              method: 'GET'
+          }).then(function(response){
+              let a;
+              response.json().then(data =>{
+                  a = data;
+                  console.log(data)
+                  if (a.data[0] !== undefined) {
+                    alert("he")
+                    let tmpArr = []
+                    a.data.array.forEach(function (item, index){
+                      a.data.push(item)
+                    });
+                    alert(tmpArr[0])
+                  } 
+                  
+                  
+              })
+          });
+    } 
+  }
+
 
   render () 
    {
@@ -107,7 +136,6 @@ class App extends React.Component {
             <strong>Invalid Input</strong> Input must match autocomplete options (case sensitive).
           </div>
           <SearchBar 
-            ref={this.SingleDate}
             handler={this.updateCounty} 
             lightdark={this.toggleLightDark} 
             getSingleDate={this.getSingleDate}
@@ -119,7 +147,6 @@ class App extends React.Component {
                 shiftLeft={this.state.sidebarOpen}
             />
             <SideBar 
-              ref={this.RangeDates}
               date={this.state.date} 
               countyName={this.state.selectedCounty} 
               cases={this.state.cases}
