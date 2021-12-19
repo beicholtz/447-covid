@@ -64,6 +64,14 @@ function repeatWithDelim( s, c, d ) {
   return r;
 }
 
+function isValidISO8601Date( s ) {
+  return s && /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test( s );
+}
+
+function isValidFIPSOrUndefined( s ) {
+  return !s || /^[0-9]{5}$/.test( s );
+}
+
 function loadVaccinationData( vaccinationDataCsvStr, callback = undefined ) {
   let vaccinationData = [];
   fastcsv.parseString( vaccinationDataCsvStr, { headers: vaccinationHeaders } )
@@ -192,7 +200,7 @@ const server = http.createServer( ( req, res ) => {
     if ( path === "/api/getdata" && method == "GET" ) {
       let query = qs.parse( queries );
       // Parse the time ranges and return the appropriate data, or return an error code if unavailable
-      if ( query.start && query.end ) {
+      if ( isValidISO8601Date( query.start ) && isValidISO8601Date( query.end ) && isValidFIPSOrUndefined( query.fips ) ) {
         let statement = query.fips ? `SELECT vaccinations.*, cases.* FROM vaccinations LEFT JOIN cases ON v_date = c_date AND v_fips = c_fips WHERE ( v_date >= $start AND v_date <= $end AND v_fips = $fips ) OR ( c_date >= $start AND c_date <= $end AND c_fips = $fips )
               UNION ALL
               SELECT vaccinations.*, cases.* FROM cases LEFT JOIN vaccinations ON v_date = c_date AND v_fips = c_fips WHERE ( v_date >= $start AND v_date <= $end AND v_fips = $fips ) OR ( c_date >= $start AND c_date <= $end AND c_fips = $fips ) AND v_date IS NULL AND v_fips IS NULL` :
@@ -205,11 +213,13 @@ const server = http.createServer( ( req, res ) => {
             console.log( error );
             res.statusCode = 500;
             res.setHeader( 'Content-Type', 'application/json' );
+            res.setHeader( 'Access-Control-Allow-Origin', '*' );
             res.end( '{"status":500,"message":"Error querying database"}' );
           } else {
             res.statusCode = 200;
             res.setHeader("Access-Control-Allow-Origin", '*');
             res.setHeader( 'Content-Type', 'application/json' );
+            res.setHeader( 'Access-Control-Allow-Origin', '*' );
             let result = { "data": [], "headers": [ "date", "fips", "county_name",  "state_name", "state", "complete_pct", "complete_12", "complete_12_pct", "complete_18", "complete_18_pct", "complete_65", "complete_65_pct", "cases", "cases_avg", "case_avg_per_100k", "deaths", "deaths_avg", "deaths_avg_per_100k" ] };
             for ( let i = 0; i < rows.length; i++ ) {
               let row = rows[ i ];
@@ -221,6 +231,7 @@ const server = http.createServer( ( req, res ) => {
       } else {
           res.statusCode = 400;
           res.setHeader( 'Content-Type', 'application/json' );
+          res.setHeader( 'Access-Control-Allow-Origin', '*' );
           res.end( '{"status":400,"message":"Invalid params"}' );
       }
     } else if ( method === "GET" ) {
@@ -228,12 +239,14 @@ const server = http.createServer( ( req, res ) => {
         if ( e ) {
           res.statusCode = 404;
           res.setHeader( 'Content-Type', 'text/plain' );
+          res.setHeader( 'Access-Control-Allow-Origin', '*' );
           res.end( '404 File not found' );
         }
       } );
     } else {
       res.statusCode = 400;
       res.setHeader( 'Content-Type', 'text/plain' );
+      res.setHeader( 'Access-Control-Allow-Origin', '*' );
       res.end( '400 Bad request' );
     }
   } ).resume();

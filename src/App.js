@@ -52,9 +52,9 @@ class App extends React.Component {
                     req.setState({
                       currFips: id[1],
                       selectedCounty : id[0],
-                      cases : a.data[0][12],
-                      complete : a.data[0][5] ? a.data[0][5] : 'Unavailable',
-                      deaths : a.data[0][15],
+                      complete : a.data[0][5] !== null ? a.data[0][5] : 'Unavailable',
+                      cases : a.data[0][12] !== null ? a.data[0][12] : 'Unavailable',
+                      deaths : a.data[0][15] !== null ? a.data[0][15] : 'Unavailable',
                       date : a.data[0][0]
                     });
                   } else {
