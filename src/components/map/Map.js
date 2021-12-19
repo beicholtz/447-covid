@@ -46,13 +46,15 @@ class Map extends React.Component {
       return '#000000'
     }
     return tmp[0] > 80? '#800026' :
-    tmp[0] > 70  ? '#BD0026' :
-    tmp[0] > 60  ? '#E31A1C' :
-    tmp[0] > 50  ? '#FC4E2A' :
-    tmp[0] > 40  ? '#FD8D3C' :
-    tmp[0] > 30   ? '#FEB24C' :
-    tmp[0] > 20  ? '#FED976' :
-                      '#FFEDA0';
+    tmp[0] > 70 ? '#BD0026' :
+    tmp[0] > 60 ? '#E31A1C' :
+    tmp[0] > 50 ? '#FC4E2A' :
+    tmp[0] > 40 ? '#FD8D3C' :
+    tmp[0] > 30 ? '#FEB24C' :
+    tmp[0] > 20 ? '#FED976' :
+    tmp[0] === null ? '#808080' : // Null value retrieved
+    tmp[0] >= 0 ? '#ffedbd' :
+                 '#808080';
   }
 
   vaccinationStyle(feature){
@@ -72,13 +74,15 @@ class Map extends React.Component {
       return '#000000'
     }
     return tmp[1] > 25? '#800026' :
-    tmp[1] > 15  ? '#BD0026' :
-    tmp[1] > 10  ? '#E31A1C' :
-    tmp[1] > 5  ? '#FC4E2A' :
+    tmp[1] > 15 ? '#BD0026' :
+    tmp[1] > 10 ? '#E31A1C' :
+    tmp[1] > 5 ? '#FC4E2A' :
     tmp[1] > 4 ? '#FD8D3C' :
-    tmp[1] > 3   ? '#FEB24C' :
-    tmp[1] > 2  ? '#FED976' :
-                      '#FFEDA0';
+    tmp[1] > 3 ? '#FEB24C' :
+    tmp[1] > 2 ? '#FED976' :
+    tmp[1] === null ? '#808080' : // Null value retrieved
+    tmp[1] >= 0 ? '#ffedbd':
+                 '#808080';
   }
 
   caseStyle(feature){
@@ -97,14 +101,16 @@ class Map extends React.Component {
     if(!tmp){
       return '#000000'
     }
-    return tmp[1] > 25? '#800026' :
-    tmp[1] > 15  ? '#BD0026' :
-    tmp[1] > 10  ? '#E31A1C' :
-    tmp[1] > 5  ? '#FC4E2A' :
-    tmp[1] > 4 ? '#FD8D3C' :
-    tmp[1] > 3   ? '#FEB24C' :
-    tmp[1] > 2  ? '#FED976' :
-                      '#FFEDA0';
+    return tmp[2] > 25? '#800026' :
+    tmp[2] > 15 ? '#BD0026' :
+    tmp[2] > 10 ? '#E31A1C' :
+    tmp[2] > 5 ? '#FC4E2A' :
+    tmp[2] > 4 ? '#FD8D3C' :
+    tmp[2] > 3 ? '#FEB24C' :
+    tmp[2] > 2 ? '#FED976' :
+    tmp[2] === null ? '#808080' : // Null value retrieved
+    tmp[2] >= 0 ? '#ffedbd' :
+                 '#808080'; 
   }
 
   deathStyle(feature){
@@ -167,14 +173,14 @@ class Map extends React.Component {
 
   componentDidMount(){
     let req = this;
-    fetch('http://localhost:3072/api/getdata?start=2021-12-16&end=2021-12-16' + this.selectedDate, {
+    fetch('http://localhost:3072/api/getdata?start=2021-12-16&end=2021-12-16', {
               method: 'GET'
           }).then(function(response){
             let dict = {}
               response.json().then(data =>{
                   for(var i in data.data){
                     let  j = data.data[i]
-                    dict[j[1]] = [j[5],j[13],j[16]];
+                    dict[j[1]] = [j[5],j[12],j[15]];
                   }
                   req.choroplethData = dict;
                   req.dataLoaded = true;
