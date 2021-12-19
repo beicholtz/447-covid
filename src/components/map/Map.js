@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import statesData from './states.json';
 import FIPStoState from './toState.json';
 import React from 'react';
+import moment from 'moment'
 
 class Map extends React.Component {
   // TODO: Move placement of where the layer control is
@@ -32,6 +33,7 @@ class Map extends React.Component {
     this.choroplethData = {};
     this.bounds = L.latLngBounds(L.latLng(51,-127), L.latLng(17,-64));
     this.dataLoaded = false;
+    this.date = moment().subtract(1, 'days').format('YYYY-MM-DD')
     
     this.onEachFeature = this.onEachFeature.bind(this);
     this.updateProps = this.updateProps.bind(this);
@@ -173,7 +175,7 @@ class Map extends React.Component {
 
   componentDidMount(){
     let req = this;
-    fetch('http://localhost:3072/api/getdata?start=2021-12-16&end=2021-12-16', {
+    fetch('http://localhost:3072/api/getdata?start=' + this.date + '&end=' + this.date, {
               method: 'GET'
           }).then(function(response){
             let dict = {}
