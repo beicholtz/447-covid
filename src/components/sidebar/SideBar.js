@@ -3,6 +3,7 @@ import 'react-dates/lib/css/_datepicker.css';
 import 'react-dates/initialize';
 import { DateRangePicker} from 'react-dates';
 import moment from "moment";
+import { LineGraph } from "../LineGraph/LineGraph";
 
 class SideBar extends React.Component {
 
@@ -13,7 +14,9 @@ class SideBar extends React.Component {
             endDate: null,
             minDate: moment("2020-01-21", "YYYY-MM-DD"),
             maxDate: moment(),
-            focusedInput: false,
+            labels: [],
+            deaths: [],
+            update: false,
         }
     }
 
@@ -31,6 +34,14 @@ class SideBar extends React.Component {
         return month + "/" + day + "/" + year;
     }
 
+    changeDate(startDate, endDate) {
+        if ((startDate !== undefined && endDate!== undefined) && (startDate !== null && endDate !==null)){
+            document.getElementById("dateText").innerHTML = startDate.format("MM/DD/YYYY");
+            document.getElementById("dateText").innerHTML = endDate.format("MM/DD/YYYY");
+        }
+    }
+    
+
     componentDidUpdate(prevProps) {
         const {focusedInput, startDate, endDate} = this.state;
         if (!focusedInput && (startDate && endDate)) {
@@ -39,6 +50,7 @@ class SideBar extends React.Component {
     }
 
     render () {
+        
         if (this.props.isOpen) {
             if (this.props.countyName) {
                 return(
@@ -61,13 +73,18 @@ class SideBar extends React.Component {
                                 startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
                                 endDate={this.state.endDate} // momentPropTypes.momentObj or null,
                                 endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
-                                onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
+                                onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate }, this.changeDate(startDate, endDate))} // PropTypes.func.isRequired,
                                 focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
                                 onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
                                 isOutsideRange={date => date.isBefore(this.state.minDate) || date.isAfter(this.state.maxDate)}
                                 />
+                            <LineGraph 
+                                labels={this.props.labelsArr}
+                                deaths={this.props.deathsArr}
+                                cases={this.props.casesArr}
+                            />
+                            <button onClick={this.props.getRangeData}>Calculate Statistics</button>
                         </div>
-                        
                     </div>
                 );
             } else {

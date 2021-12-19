@@ -15,7 +15,9 @@ class App extends React.Component {
     super(props)
     this.state = {
         currFips: null,
-        statsData: [],
+        labelsArr: null,
+        deathsArr: null,
+        casesArr: null,
         selectedCounty : 0,
         cases : 0,
         complete : 0,
@@ -27,10 +29,11 @@ class App extends React.Component {
     this.updateCounty = this.updateCounty.bind(this);
     this.handleViewSidebar = this.handleViewSidebar.bind(this);
     this.toggleLightDark = this.toggleLightDark.bind(this);
-    this.selectedDate = moment().subtract(1, 'days').format("YYYY-MM-DD")
-    this.startDate = moment().subtract(2, 'days').format("YYYY-MM-DD")
-    this.endDate = moment().subtract(1, 'days').format("YYYY-MM-DD")
-    this.getRangeData = this.getRangeData.bind(this)
+    this.selectedDate = moment().subtract(1, 'days').format("YYYY-MM-DD");
+    this.startDate = moment().subtract(2, 'days').format("YYYY-MM-DD");
+    this.endDate = moment().subtract(1, 'days').format("YYYY-MM-DD");
+    this.getRangeData = this.getRangeData.bind(this);
+    this.getData = this.getData.bind(this);
 
   }
   
@@ -56,6 +59,7 @@ class App extends React.Component {
                     });
                   } else {
                     req.setState({
+                      currFips: id[1],
                       selectedCounty : id[0],
                       cases : "Unavailable",
                       complete : "Unavailable",
@@ -88,9 +92,9 @@ class App extends React.Component {
     document.getElementById("alert").style.display = "none";
   }
 
-  getRangeDates = (startDate, endDate) => {
-    this.startDate = moment(startDate).format("YYYY-MM-DD");
-    this.endDate = moment(endDate).format("YYYY-MM-DD");
+  getRangeDates = (first, second) => {
+    this.startDate = moment(first).format("YYYY-MM-DD");
+    this.endDate = moment(second).format("YYYY-MM-DD");
     this.getRangeData()
   }
 
@@ -98,31 +102,46 @@ class App extends React.Component {
     this.selectedDate = moment(singleDate).format("YYYY-MM-DD");
   }
 
+  getData(data) {
+    var labels = [];
+    var deaths = [];
+    var cases = [];
+    for(var i=0; i<data.length; i++){
+       labels.push(data[i][0]);
+       deaths.push(data[i][15]);
+       cases.push(data[i][12]);
+    } 
+    this.setState({
+        labelsArr: labels,
+        deathsArr: deaths,
+        casesArr: cases
+    });
+  }
+
   async getRangeData() {
     let req = this;
-
+    var uniques = [];
     if (this.state.currFips !== undefined && this.state.currFips) {
       document.getElementById("alert").style.display = "none";
-      await fetch('http://localhost:3072/api/getdata?start=' + this.state.startDate + '&end=' + this.state.endDate + '&fips=' + this.state.currFips, {
+      await fetch('http://localhost:3072/api/getdata?start=' + this.startDate + '&end=' + this.endDate + '&fips=' + this.state.currFips, {
               method: 'GET'
           }).then(function(response){
               let a;
               response.json().then(data =>{
                   a = data;
-                  console.log(data)
                   if (a.data[0] !== undefined) {
-                    alert("he")
-                    let tmpArr = []
-                    a.data.array.forEach(function (item, index){
-                      a.data.push(item)
-                    });
-                    alert(tmpArr[0])
-                  } 
-                  
-                  
+                    
+                    var arr = Object.values(a.data);
+                    arr.map(JSON.stringify).reverse().filter(function (e, i, a) {
+                      return a.indexOf(e, i+1) === -1;
+                    }).reverse().map(JSON.parse);
+                    
+                    uniques = arr.slice(0, arr.length/2);
+                    req.getData(uniques.reverse());
+                  }
               })
           });
-    } 
+    }   
   }
 
 
@@ -154,6 +173,10 @@ class App extends React.Component {
               isOpen={this.state.sidebarOpen} 
               toggleSidebar={this.handleViewSidebar} 
               getRangeDates={this.getRangeDates}
+              getRangeData={this.getRangeData}
+              labelsArr={this.state.labelsArr}
+              deathsArr={this.state.deathsArr}
+              casesArr={this.state.casesArr}
               />
           </div>
         </div>
